@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:home_bake/core/app_routes.dart';
 import 'package:home_bake/features/auth/view_model/auth_view_model.dart';
+import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
 import 'package:home_bake/features/detail/view_model/detail_view_model.dart';
 import 'package:home_bake/features/home/view_model/home_view_model.dart';
 import 'package:home_bake/features/onboarding/view_model/onboarding_view_model.dart';
@@ -20,6 +21,7 @@ void main() async{
     ChangeNotifierProvider(create: (_) => OnboardingViewModel()),
     ChangeNotifierProvider(create: (_) => HomeViewModel()),
     ChangeNotifierProvider(create: (_) => DetailViewModel()),
+    ChangeNotifierProvider(create: (_) => CartViewModel()),
   ],child: const MyApp()));
 }
 

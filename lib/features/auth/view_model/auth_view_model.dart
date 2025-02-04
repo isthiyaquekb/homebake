@@ -56,6 +56,7 @@ class AuthViewmodel extends ChangeNotifier {
       );
       _user = userCredential.user;
       storageBox.write(AppKeys.keyIsLoggedIn, true);
+      storageBox.write(AppKeys.keyUserId, _user?.uid);
       notifyListeners();
       return true;
     } catch (e) {

@@ -31,6 +31,7 @@ class AppAssets {
   static const String categoryCake = "assets/jpg/cake_dummy.jpg";
   static const String categoryChips = "assets/jpg/chips.jpeg";
   static const String categoryBiscuit = "assets/jpg/biscuit.jpeg";
+  static const String imageNotFound = "assets/jpg/no_image_found.jpg";
 
   //SVG ICONS
   static const String menu = "assets/svg/nav_menu.svg";
@@ -59,6 +60,8 @@ class AppAssets {
   static const String backIcon = "assets/svg/back.svg";
   static const String favouriteIcon = "assets/svg/favourite_filled.svg";
   static const String unfilledFavourite = "assets/svg/favourite_unfilled.svg";
+  static const String minus = "assets/svg/minus_square.svg";
+  static const String add = "assets/svg/add_square.svg";
 
 
 

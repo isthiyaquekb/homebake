@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:home_bake/features/auth/view/signup_screen.dart';
+import 'package:home_bake/features/cart/view/cart_screen.dart';
 import 'package:home_bake/features/detail/view/detail_screen.dart';
 import 'package:home_bake/features/home/view/home_screen.dart';
 import 'package:home_bake/features/auth/view/login_screen.dart';
@@ -18,6 +19,7 @@ abstract class AppRoutes {
   static const seeAll = '/see-all';
   static const search = '/search';
   static const permission = '/permission';
+  static const cart = '/cart';
 
 
   static Route<dynamic> generatedRoutes(RouteSettings routeSettings) {
@@ -40,6 +42,8 @@ abstract class AppRoutes {
       case seeAll:
         return MaterialPageRoute(builder: (context) => SeeAllScreen());
 
+      case cart:
+        return MaterialPageRoute(builder: (context) => CartScreen());
       default:
         throw const FormatException("Route not found!, check routes again");
     }

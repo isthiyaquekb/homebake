@@ -15,13 +15,19 @@ class HomeViewModel extends ChangeNotifier{
   var selectedCategoryIndex=0;
   var selectedPopularIndex=0;
 
-  final List<CategoryModel> _categoryList=[];
+  List<CategoryModel> _categoryList=[];
   List<ProductModel> _productList=[];
   bool _isLoading = false;
   List<CategoryModel> get categoryList=> _categoryList;
   List<ProductModel> get productList=> _productList;
   bool get isLoading => _isLoading;
 
+
+  void init() async {
+   await getCategories();
+   await getProducts();
+   notifyListeners();
+  }
 
   void setIsLoading(bool loading) {
     _isLoading = loading;
@@ -40,6 +46,22 @@ class HomeViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
+  /// Fetch category from FireStore
+  Future<void> getCategories() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      QuerySnapshot querySnapshot = await _firebaseServices.fireStore.collection('categories').get();
+      _categoryList = querySnapshot.docs.map((doc) => CategoryModel.fromDocumentSnapshot(doc)).toList();
+      log("CATEGORY IMAGE:${_categoryList[0].image}");
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Error fetching products: $e");
+    }
+    _isLoading = false;
+    notifyListeners();
+  }
 
   /// Fetch products from FireStore
   Future<void> getProducts() async {

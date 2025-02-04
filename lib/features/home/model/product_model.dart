@@ -10,7 +10,7 @@ class ProductModel {
   final String sku;
   final int stock;
   final int minStock;
-  final String? image;
+  final String image;
   final Timestamp createdAt;
 
   ProductModel({
@@ -23,7 +23,7 @@ class ProductModel {
     required this.sku,
     required this.stock,
     required this.minStock,
-    this.image,
+    required this.image,
     Timestamp? createdAt,
   }) : createdAt = createdAt ?? Timestamp.now();
 
@@ -55,7 +55,7 @@ class ProductModel {
       sku: map["sku"] ?? '',
       stock: (map["stock"] ?? 0).toInt(),
       minStock: (map["min_stock"] ?? 0).toInt(),
-      image: map["image"],
+      image: map["image"]??'',
       createdAt: map["created_at"] ?? Timestamp.now(),
     );
   }

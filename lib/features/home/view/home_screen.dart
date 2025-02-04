@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_bake/core/app_assets.dart';
+import 'package:home_bake/core/app_routes.dart';
+import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
 import 'package:home_bake/features/home/view_model/home_view_model.dart';
 import 'package:home_bake/widgets/category_item_widget.dart';
 import 'package:home_bake/widgets/header_widget.dart';
@@ -12,8 +14,13 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeViewModel = Provider.of<HomeViewModel>(context);
-    homeViewModel.getProducts();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      final homeViewModel = Provider.of<HomeViewModel>(context,listen: false);
+      final cartViewModel = Provider.of<CartViewModel>(context,listen: false);
+      homeViewModel.init();
+      cartViewModel.init();
+    });
+
     return Scaffold(
       drawer: Drawer(
           child: Column(
@@ -54,9 +61,14 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SvgPicture.asset(AppAssets.menu),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: SvgPicture.asset(AppAssets.cart),
+                  InkWell(
+                    onTap: (){
+                      Navigator.pushNamed(context, AppRoutes.cart);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: SvgPicture.asset(AppAssets.cart),
+                    ),
                   ),
                 ],
               ),
