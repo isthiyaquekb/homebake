@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1007023164029",
+    "project_id": "home-back-admin",
+    "storage_bucket": "home-back-admin.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007023164029:android:719f8e4fd19adea15dff14",
+        "android_client_info": {
+          "package_name": "app.kambathagothi.home_bake"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsv-RJOh28PI5ViMDjtvJ23aC6jwLTnGE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007023164029:android:9e7e6522f505c39a5dff14",
+        "android_client_info": {
+          "package_name": "com.kambatha.homebakeadmin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsv-RJOh28PI5ViMDjtvJ23aC6jwLTnGE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
