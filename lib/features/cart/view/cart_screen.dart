@@ -5,6 +5,8 @@ import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/app_colors.dart';
 import 'package:home_bake/features/cart/model/cart_model.dart';
 import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
+import 'package:home_bake/features/dashboard/viewmodel/dashboard_viewmodel.dart';
+import 'package:home_bake/features/order/viewmodel/order_view_model.dart';
 import 'package:home_bake/widgets/common_app_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -102,9 +104,10 @@ class CartScreen extends StatelessWidget {
                                                               content: Text(
                                                                   '${cartItems[index].name} dismissed')));
                                                     }
-                                                    if (context.mounted)
+                                                    if (context.mounted) {
                                                       Navigator.of(context)
                                                           .pop(true);
+                                                    }
                                                   }),
                                             ],
                                           );
@@ -229,21 +232,29 @@ class CartScreen extends StatelessWidget {
                             );
                           },
                         ))),
-            Container(
-              margin: const EdgeInsets.only(bottom: 20),
-              height: 40,
-              width: double.maxFinite,
-              decoration: BoxDecoration(
-                color: Colors.green.shade100,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Center(
-                child: Text(
-                  "Proceed to checkout",
-                  style: Theme.of(context).textTheme.labelMedium,
+            Consumer<CartViewModel>(builder: (context, provider, child) => InkWell(
+              onTap: (){
+
+                Provider.of<OrderViewModel>(context,listen: false).placeOrder(provider.user!.uid, provider.cartItems,);
+                context.read<DashboardViewmodel>().setCurrentIndex(1);
+
+              },
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                height: 40,
+                width: double.maxFinite,
+                decoration: BoxDecoration(
+                  color: Colors.green.shade100,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Center(
+                  child: Text(
+                    "Proceed to checkout",
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
                 ),
               ),
-            )
+            ),)
           ],
         ),
       ),

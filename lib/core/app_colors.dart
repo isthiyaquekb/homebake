@@ -39,6 +39,7 @@ class AppColor {
 
   static const Color darkIndicator = Color(0xff929292);
   static const Color inActiveColor = Color(0xff929292);
+  static const Color borderColor = Color(0xffD9D9D9);
 
   static const Color detailBGColor = Color(0xFF06070B);
   static const Color greyTextColor = Color(0xFFDAE0E1);

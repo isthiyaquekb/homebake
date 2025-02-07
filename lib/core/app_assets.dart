@@ -66,6 +66,15 @@ class AppAssets {
   static const String userProfile = "assets/svg/user_icon.svg";
   static const String userProfileFilled = "assets/svg/user_filled.svg";
   static const String backArrow = "assets/svg/back_arrow.svg";
+  static const String bag = "assets/svg/bag.svg";
+  static const String bagFilled = "assets/svg/bag_filled.svg";
+  static const String bag2 = "assets/svg/bag-2.svg";
+  static const String bag2filled = "assets/svg/bag-2-filled.svg";
+  static const String accepted = "assets/svg/circle-check-filled.svg";
+  static const String pending = "assets/svg/clock-pending.svg";
+  static const String newOrder = "assets/svg/new_order.svg";
+  static const String orderReceived = "assets/svg/order_received.svg";
+  static const String rejected = "assets/svg/reject.svg";
 
 
 

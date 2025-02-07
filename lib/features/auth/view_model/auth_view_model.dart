@@ -71,6 +71,7 @@ class AuthViewmodel extends ChangeNotifier {
       _user = null;
       _emailController.clear();
       _passwordController.clear();
+      storageBox.write(AppKeys.keyIsLoggedIn, false);
       notifyListeners();
 
       return true;

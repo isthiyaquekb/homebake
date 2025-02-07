@@ -8,6 +8,7 @@ import 'package:home_bake/features/dashboard/viewmodel/dashboard_viewmodel.dart'
 import 'package:home_bake/features/detail/view_model/detail_view_model.dart';
 import 'package:home_bake/features/home/view_model/home_view_model.dart';
 import 'package:home_bake/features/onboarding/view_model/onboarding_view_model.dart';
+import 'package:home_bake/features/order/viewmodel/order_view_model.dart';
 import 'package:home_bake/features/splash/view_model/splash_provider.dart';
 import 'package:home_bake/firebase_options.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,7 @@ void main() async{
     ChangeNotifierProvider(create: (_) => HomeViewModel()),
     ChangeNotifierProvider(create: (_) => DetailViewModel()),
     ChangeNotifierProvider(create: (_) => CartViewModel()),
+    ChangeNotifierProvider(create: (_) => OrderViewModel()),
   ],child: const MyApp()));
 }
 

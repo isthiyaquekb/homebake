@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/app_routes.dart';
+import 'package:home_bake/features/auth/view_model/auth_view_model.dart';
 import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
 import 'package:home_bake/features/home/view_model/home_view_model.dart';
 import 'package:home_bake/widgets/category_item_widget.dart';
@@ -35,19 +36,28 @@ class HomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  InkWell(
-                    onTap: () => context.read<HomeViewModel>().globalKey.currentState!.openDrawer(),
-                      child: SvgPicture.asset(AppAssets.menu)),
-                  Consumer<CartViewModel>(builder: (context, provider, child) => InkWell(
-                    onTap: (){
-                      Navigator.pushNamed(context, AppRoutes.cart);
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        AppAssets.locationIcon,
+                        height: 24,
+                        width: 24,
+                      ),
+                      Padding(
+                        padding:
+                        const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text("Minicoy Island,Lakshadweep",style: Theme.of(context).textTheme.labelLarge),
+                      ),
+                    ],
+                  ),
+                  Consumer<AuthViewmodel>(builder: (context, provider, child) => InkWell(
+                    onTap: ()async{
+                      await provider.logout();
+                      if(context.mounted) Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Badge(
-                        label: Text(provider.cartCount.toString()),
-                        child: SvgPicture.asset(AppAssets.cart),
-                      ),
+                      child: SvgPicture.asset(AppAssets.logoutIcon,height: 24,width: 24,),
                     ),
                   ),)
                 ],
@@ -63,7 +73,6 @@ class HomeScreen extends StatelessWidget {
                     .height * 0.25,
                 width: double.maxFinite,
                 decoration: const BoxDecoration(
-                    color: Colors.transparent,
                     image: DecorationImage(
                       alignment: Alignment.centerRight,
                       image:  AssetImage(
@@ -79,23 +88,9 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              AppAssets.locationIcon,
-                              height: 24,
-                              width: 24,
-                            ),
-                            Padding(
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text("Minicoy Island,Lakshadweep",style: Theme.of(context).textTheme.labelLarge),
-                            ),
-                          ],
-                        ),
                         //widget to headline
                         Container(
-                          margin: const EdgeInsets.only(top: 40),
+                          margin: EdgeInsets.only(top:MediaQuery.sizeOf(context).height*0.10),
                             width: MediaQuery
                                 .of(context)
                                 .size

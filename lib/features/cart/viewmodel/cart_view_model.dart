@@ -11,9 +11,11 @@ class CartViewModel extends ChangeNotifier{
   final FirebaseServices _firebaseServices = FirebaseServices();
   List<CartModel> _cartItems = [];
   int _cartCount = 0;
+  double _totalAmount = 0;
 
   List<CartModel> get cartItems => _cartItems;
   int get cartCount => _cartCount;
+  double get totalAmount => _totalAmount;
 
   User? _user;
 
@@ -24,7 +26,7 @@ class CartViewModel extends ChangeNotifier{
     print("USER ID cart: $uid");
     fetchCart(uid).listen((cartItems) {
       if (_cartCount != cartItems.length) {
-        setCartCount(cartItems.length);
+        setCartCount(cartItems.length,cartItems);
       }
     });
   }
@@ -36,16 +38,25 @@ class CartViewModel extends ChangeNotifier{
 
   /// Stream to listen for cart updates in real-time
   Stream<List<CartModel>> fetchCart(String userId) {
+    _totalAmount=0;
+    notifyListeners();
     return _firebaseServices.fireStore
         .collection('carts')
         .doc(userId)
         .collection('items')
         .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList());
+        .map((snapshot) {
+      snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList().forEach((element) {
+        _totalAmount+=(element.quantity*element.price);
+      });
+          // _totalAmount=
+          return snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList();
+    });
 
   }
 
-  void setCartCount(int count){
+  void setCartCount(int count, List<CartModel> cartList,){
+    _cartItems=cartList;
     _cartCount=count;
     log("SET CART COUNT:${cartCount}");
     notifyListeners();
