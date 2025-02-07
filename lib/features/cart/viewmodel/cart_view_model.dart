@@ -10,8 +10,10 @@ class CartViewModel extends ChangeNotifier{
 
   final FirebaseServices _firebaseServices = FirebaseServices();
   List<CartModel> _cartItems = [];
+  int _cartCount = 0;
 
   List<CartModel> get cartItems => _cartItems;
+  int get cartCount => _cartCount;
 
   User? _user;
 
@@ -20,7 +22,11 @@ class CartViewModel extends ChangeNotifier{
   void init() async{
     var uid=await fetchUserId();
     print("USER ID cart: $uid");
-    fetchCart(uid);
+    fetchCart(uid).listen((cartItems) {
+      if (_cartCount != cartItems.length) {
+        setCartCount(cartItems.length);
+      }
+    });
   }
   Future<String> fetchUserId() async {
     _user = _firebaseServices.auth.currentUser;
@@ -36,18 +42,14 @@ class CartViewModel extends ChangeNotifier{
         .collection('items')
         .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList());
+
   }
 
-  // Future<void> fetchCart(String userId) async {
-  //   try {
-  //     final snapshot = await _firebaseServices.fireStore.collection('carts').doc(userId).collection('items').get();
-  //     _cartItems = snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList();
-  //     log("CART LENGTH:${_cartItems.length}");
-  //     notifyListeners();
-  //   } catch (e) {
-  //     print("Error fetching cart: $e");
-  //   }
-  // }
+  void setCartCount(int count){
+    _cartCount=count;
+    log("SET CART COUNT:${cartCount}");
+    notifyListeners();
+  }
 
   Future<void> addToCart(String userId, CartModel item) async {
     try {
@@ -105,5 +107,20 @@ class CartViewModel extends ChangeNotifier{
   }
 
 
+  ///DELETE CART
+  Future<void> deleteCartItem(String userId, String productId) async {
+    try {
+      await _firebaseServices.fireStore
+          .collection('carts')
+          .doc(userId)
+          .collection('items')
+          .doc(productId)
+          .delete();
+
+      print("Cart item deleted: $productId");
+    } catch (e) {
+      print("Error deleting cart item: $e");
+    }
+  }
 
 }

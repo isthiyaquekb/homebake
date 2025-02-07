@@ -27,7 +27,7 @@ class PopularCakeItemWidget extends StatelessWidget {
         children: [
           InkWell(
             onTap: (){
-              Navigator.pushNamed(context, AppRoutes.details);
+              Navigator.pushNamed(context, AppRoutes.details,arguments: product);
               context.read<HomeViewModel>().setPopular(selectedIndex);
             },
             child: Container(margin: const EdgeInsets.only(top: 40),width: 120,decoration: BoxDecoration(
@@ -52,7 +52,7 @@ class PopularCakeItemWidget extends StatelessWidget {
                         children: [
                           Text(product.name,maxLines: 2,style: const TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.w600),),
                           Flexible(
-                            child: Text("${product.description}",maxLines: 5,overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.black38,fontSize: 10,fontWeight: FontWeight.w400),),
+                            child: Text(product.description,maxLines: 5,overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.black38,fontSize: 10,fontWeight: FontWeight.w400),),
                           ),
                         ],
                       ),),
@@ -60,7 +60,7 @@ class PopularCakeItemWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text("\$ ${product.price}",style: const TextStyle(color: Colors.black,fontSize: 10,fontWeight: FontWeight.w700),),
+                          Text("\u{20B9} ${product.price}",style: const TextStyle(color: Colors.black,fontSize: 10,fontWeight: FontWeight.w700),),
 
                         ],
                       ),
@@ -70,20 +70,21 @@ class PopularCakeItemWidget extends StatelessWidget {
               ],
             ),),
           ),
-          Positioned(top: 0,left: 0,right: 0,child: CachedNetworkImage(imageUrl: product.image.toString(),height: 80,width: 110,errorWidget: (context, url, error) => Image(image: AssetImage(AppAssets.imageNotFound),fit: BoxFit.cover,),),),
-          Consumer<CartViewModel>(builder: (context, cartProvider, child) =>  Positioned(bottom: 0,right: 0,child:ClipRRect(
-            borderRadius: const BorderRadius.only(bottomRight: Radius.circular(10),),
-            child: InkWell(
-              onTap: (){
-                var cartItem=CartModel(productId: product.id, name: product.name, image: product.image, price: product.price, quantity: 1);
-                cartProvider.addToCart(cartProvider.user!.uid.toString(), cartItem);
-              },
-              child: Container(decoration: BoxDecoration(
-                  color: Colors.red.shade300,
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(5),)
-              ),child: Icon(Icons.add,size: 20,)),
-            ),
-          ),),),
+          Positioned(top: 0,left: 0,right: 0,child: CachedNetworkImage(imageUrl: product.image.toString(),height: 80,width: 110,errorWidget: (context, url, error) => Image(image: AssetImage(AppAssets.appLogo),fit: BoxFit.cover,),),),
+          // Consumer<CartViewModel>(builder: (context, cartProvider, child) =>  Positioned(bottom: 0,right: 0,child:ClipRRect(
+          //   borderRadius: const BorderRadius.only(bottomRight: Radius.circular(10),),
+          //   child: InkWell(
+          //     onTap: ()async{
+          //       var cartItem=CartModel(productId: product.id, name: product.name, image: product.image, price: product.price, quantity: 1);
+          //       await cartProvider.addToCart(cartProvider.user!.uid.toString(), cartItem);
+          //      if(context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${product.name} added to cart')));
+          //     },
+          //     child: Container(decoration: BoxDecoration(
+          //         color: Colors.red.shade300,
+          //         borderRadius: BorderRadius.only(topLeft: Radius.circular(5),)
+          //     ),child: Icon(Icons.add,size: 20,)),
+          //   ),
+          // ),),),
         ],
       ),
     );

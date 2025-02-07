@@ -23,6 +23,7 @@ class CategoryItemWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(35),
         onTap:() {
           context.read<HomeViewModel>().setCategory(selectedIndex);
+          context.read<HomeViewModel>().filterProductByCategoryName(categoryData.name);
         },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(35),

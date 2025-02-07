@@ -181,9 +181,6 @@ class SignupScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const Center(
-                child: Text("Copyright@2025"),
-              ),
             ],
           ),
         ),

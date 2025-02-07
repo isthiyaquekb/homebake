@@ -12,7 +12,7 @@ class SplashProvider extends ChangeNotifier{
 
   void startTimer(BuildContext context) {
     storageBox.writeIfNull(AppKeys.keyIsLoggedIn, false);
-    _timer = Timer(const Duration(seconds: 3), navigateToHome(context));
+    _timer = Timer(const Duration(seconds: 3), () =>navigateToHome(context));
   }
 
   @override
@@ -23,7 +23,7 @@ class SplashProvider extends ChangeNotifier{
 
 
   navigateToHome(BuildContext context) {
-  storageBox.read(AppKeys.keyIsLoggedIn)?Navigator.of(context).pushReplacementNamed(AppRoutes.home):Navigator.of(context).pushReplacementNamed(AppRoutes.onBoard);
+  storageBox.read(AppKeys.keyIsLoggedIn)?Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard):Navigator.of(context).pushReplacementNamed(AppRoutes.onBoard);
   }
 
 

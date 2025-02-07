@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/services/firebase_services.dart';
 import 'package:home_bake/features/home/model/category_model.dart';
@@ -9,7 +10,7 @@ import 'package:home_bake/features/home/model/popular_cake_model.dart';
 import 'package:home_bake/features/home/model/product_model.dart';
 
 class HomeViewModel extends ChangeNotifier{
-
+  final GlobalKey<ScaffoldState> _globalKey = GlobalKey(); // Create a key
   final FirebaseServices _firebaseServices = FirebaseServices();
 
   var selectedCategoryIndex=0;
@@ -20,6 +21,7 @@ class HomeViewModel extends ChangeNotifier{
   bool _isLoading = false;
   List<CategoryModel> get categoryList=> _categoryList;
   List<ProductModel> get productList=> _productList;
+  GlobalKey<ScaffoldState> get globalKey=> _globalKey;
   bool get isLoading => _isLoading;
 
 
@@ -72,6 +74,28 @@ class HomeViewModel extends ChangeNotifier{
       QuerySnapshot querySnapshot = await _firebaseServices.fireStore.collection('products').get();
       _productList = querySnapshot.docs.map((doc) => ProductModel.fromDocumentSnapshot(doc)).toList();
       log("PRODUCTS:${productList[0].image}");
+    } catch (e) {
+      debugPrint("Error fetching products: $e");
+    }
+    _isLoading = false;
+    notifyListeners();
+  }
+  /// Filter products by category name
+  Future<void> filterProductByCategoryName(String categoryName)async{
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      QuerySnapshot querySnapshot = await _firebaseServices.fireStore
+          .collection('products')
+          .where('category', isEqualTo: categoryName) // FireStore filtering
+          .get();
+
+      _productList = querySnapshot.docs
+          .map((doc) => ProductModel.fromDocumentSnapshot(doc))
+          .toList();
+
+      log("PRODUCTS COUNT: ${_productList.length}");
     } catch (e) {
       debugPrint("Error fetching products: $e");
     }

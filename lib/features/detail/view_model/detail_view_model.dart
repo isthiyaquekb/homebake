@@ -10,10 +10,6 @@ class DetailViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
-  List<String> sizeList=[
-   "S","M","L"
-  ];
-
   void incrementCount(){
     count++;
     notifyListeners();

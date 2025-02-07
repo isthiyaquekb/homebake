@@ -37,6 +37,7 @@ class AppAssets {
   static const String menu = "assets/svg/nav_menu.svg";
   static const String home = "assets/svg/home.svg";
   static const String cart = "assets/svg/cart_icon.svg";
+  static const String cartFilled = "assets/svg/cart_filled.svg";
   static const String homeFilled = "assets/svg/home_filled.svg";
   static const String nextIcon = "assets/svg/next_icon.svg";
   static const String startIcon = "assets/svg/start_icon.svg";
@@ -62,6 +63,9 @@ class AppAssets {
   static const String unfilledFavourite = "assets/svg/favourite_unfilled.svg";
   static const String minus = "assets/svg/minus_square.svg";
   static const String add = "assets/svg/add_square.svg";
+  static const String userProfile = "assets/svg/user_icon.svg";
+  static const String userProfileFilled = "assets/svg/user_filled.svg";
+  static const String backArrow = "assets/svg/back_arrow.svg";
 
 
 

@@ -22,32 +22,7 @@ class HomeScreen extends StatelessWidget {
     });
 
     return Scaffold(
-      drawer: Drawer(
-          child: Column(
-            children: [
-              Container(
-                height: 40,
-                color: Colors.grey.shade400,
-              ),
-              Container(
-                height: 40,
-                color: Colors.grey.shade500,
-              ),
-              Container(
-                height: 40,
-                color: Colors.grey.shade600,
-              ),
-              const Divider(
-                height: 0.5,
-                thickness: 0.6,
-                color: Colors.red,
-              ),
-              Container(
-                height: 40,
-                color: Colors.grey.shade700,
-              ),
-            ],
-          )),
+      key:context.read<HomeViewModel>().globalKey,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(top: 46.0, left: 16.0, bottom: 16.0),
@@ -60,16 +35,21 @@ class HomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SvgPicture.asset(AppAssets.menu),
                   InkWell(
+                    onTap: () => context.read<HomeViewModel>().globalKey.currentState!.openDrawer(),
+                      child: SvgPicture.asset(AppAssets.menu)),
+                  Consumer<CartViewModel>(builder: (context, provider, child) => InkWell(
                     onTap: (){
                       Navigator.pushNamed(context, AppRoutes.cart);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: SvgPicture.asset(AppAssets.cart),
+                      child: Badge(
+                        label: Text(provider.cartCount.toString()),
+                        child: SvgPicture.asset(AppAssets.cart),
+                      ),
                     ),
-                  ),
+                  ),)
                 ],
               ),
               const SizedBox(
@@ -109,18 +89,18 @@ class HomeScreen extends StatelessWidget {
                             Padding(
                               padding:
                               const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: const Text("Minicoy Island,Lakshadweep"),
+                              child: Text("Minicoy Island,Lakshadweep",style: Theme.of(context).textTheme.labelLarge),
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
                         //widget to headline
-                        Text("What would you like \nto eat today?"),
-                        const SizedBox(
-                          height: 20,
-                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 40),
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.55,
+                            child: const Text("What would you like to eat today?",style: TextStyle(fontSize: 24,fontWeight: FontWeight.w600),)),
                       ],
                     ),
                   ],
