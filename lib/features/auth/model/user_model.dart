@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class UserModel {
   final String? userId;
   final String role;
   final String firstname;
   final String lastname;
   final String email;
+  final String phone;
+  final String address;
   final String gender;
   final String dob;
 
@@ -13,6 +17,8 @@ class UserModel {
     required this.firstname,
     required this.lastname,
     required this.email,
+    required this.phone,
+    required this.address,
     required this.gender,
     required this.dob
   });
@@ -24,8 +30,10 @@ class UserModel {
       firstname :json['firstname'],
       lastname :json['lastname'],
       email : json['email'],
-      gender : json['gender'],
-      dob : json['dob'],
+      phone : json['phone']??"NA",
+      address : json['address']??"NA",
+      gender : json['gender']??"NA",
+      dob : json['dob']??"NA",
     );
   }
 
@@ -36,7 +44,16 @@ class UserModel {
     "lastname": lastname,
     "email": email,
     "gender": gender,
+    "phone": phone,
+    "address": address,
     "dob": dob,
   };
+
+
+  /// Converts a FireStore document snapshot to a ProductModel instance
+  factory UserModel.fromDocumentSnapshot(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+    return UserModel.fromMap(data,);
+  }
 
 }

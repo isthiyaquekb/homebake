@@ -1,9 +1,11 @@
 enum OrderStatus {
   newOrder,    // When order is placed
   accepted,    // When accepted by admin
+  rejected,    // When rejected by admin
   readyForPickup, // When it's ready for pickup
   pickedUp,    // When picked up
   received,    // When received by the customer
+
 }
 
 extension OrderStatusExtension on OrderStatus {
@@ -13,6 +15,8 @@ extension OrderStatusExtension on OrderStatus {
         return "New";
       case OrderStatus.accepted:
         return "Accepted";
+      case OrderStatus.rejected:
+        return "Rejected";
       case OrderStatus.readyForPickup:
         return "Ready for Pickup";
       case OrderStatus.pickedUp:

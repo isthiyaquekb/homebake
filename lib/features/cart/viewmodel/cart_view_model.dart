@@ -13,7 +13,7 @@ class CartViewModel extends ChangeNotifier{
   int _cartCount = 0;
   double _totalAmount = 0;
 
-  List<CartModel> get cartItems => _cartItems;
+  List<CartModel> get cartItemsList => _cartItems;
   int get cartCount => _cartCount;
   double get totalAmount => _totalAmount;
 
@@ -23,7 +23,7 @@ class CartViewModel extends ChangeNotifier{
 
   void init() async{
     var uid=await fetchUserId();
-    print("USER ID cart: $uid");
+    log("USER ID cart: $uid");
     fetchCart(uid).listen((cartItems) {
       if (_cartCount != cartItems.length) {
         setCartCount(cartItems.length,cartItems);
@@ -38,28 +38,25 @@ class CartViewModel extends ChangeNotifier{
 
   /// Stream to listen for cart updates in real-time
   Stream<List<CartModel>> fetchCart(String userId) {
-    _totalAmount=0;
-    notifyListeners();
     return _firebaseServices.fireStore
         .collection('carts')
         .doc(userId)
         .collection('items')
         .snapshots()
         .map((snapshot) {
-      snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList().forEach((element) {
-        _totalAmount+=(element.quantity*element.price);
-      });
-          // _totalAmount=
-          return snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList();
+      return snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList();
     });
 
   }
 
   void setCartCount(int count, List<CartModel> cartList,){
+    _totalAmount=0;
     _cartItems=cartList;
     _cartCount=count;
     log("SET CART COUNT:${cartCount}");
-    notifyListeners();
+   for (var element in cartList) {
+     _totalAmount+=(element.quantity*element.price);
+   }
   }
 
   Future<void> addToCart(String userId, CartModel item) async {
@@ -74,6 +71,7 @@ class CartViewModel extends ChangeNotifier{
       }
 
       fetchCart(userId);
+      init();
     } catch (e) {
       print("Error adding to cart: $e");
     }
@@ -87,12 +85,13 @@ class CartViewModel extends ChangeNotifier{
       final doc = await docRef.get();
 
       if (doc.exists) {
-        await docRef.update({'quantity': item.quantity++});
+        await docRef.update({'quantity': item.quantity + 1});
       } else {
         await docRef.set(item.toMap());
       }
 
       fetchCart(userId);
+      init();
     } catch (e) {
       print("Error adding to cart: $e");
     }
@@ -106,12 +105,14 @@ class CartViewModel extends ChangeNotifier{
       final doc = await docRef.get();
 
       if (doc.exists) {
-        await docRef.update({'quantity': item.quantity--});
+        await docRef.update({'quantity': item.quantity-1});
       } else {
+        item.quantity = 1;
         await docRef.set(item.toMap());
       }
 
       fetchCart(userId);
+      init();
     } catch (e) {
       print("Error adding to cart: $e");
     }

@@ -12,15 +12,18 @@ import 'package:home_bake/features/home/model/product_model.dart';
 class HomeViewModel extends ChangeNotifier{
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey(); // Create a key
   final FirebaseServices _firebaseServices = FirebaseServices();
-
+  TextEditingController _searchController = TextEditingController();
+  TextEditingController get searchController => _searchController;
   var selectedCategoryIndex=0;
   var selectedPopularIndex=0;
 
   List<CategoryModel> _categoryList=[];
   List<ProductModel> _productList=[];
+  List<ProductModel> _filteredProducts = [];
   bool _isLoading = false;
   List<CategoryModel> get categoryList=> _categoryList;
   List<ProductModel> get productList=> _productList;
+  List<ProductModel> get filteredProducts => _filteredProducts;
   GlobalKey<ScaffoldState> get globalKey=> _globalKey;
   bool get isLoading => _isLoading;
 
@@ -100,6 +103,30 @@ class HomeViewModel extends ChangeNotifier{
       debugPrint("Error fetching products: $e");
     }
     _isLoading = false;
+    notifyListeners();
+  }
+
+  void search(String searchQuery) async {
+    log("SEARCH PRODUCTS QUERY: ${searchQuery}");
+    if (searchQuery.isEmpty) {
+      _filteredProducts.clear();
+      _productList; // Reset to all products
+    } else {
+      _filteredProducts = _productList.where((product) {
+        return product.name.toLowerCase().contains(searchQuery.toLowerCase());
+      }).toList();
+    }
+    log("FILTER PRODUCTS: $filteredProducts");
+    notifyListeners();
+  }
+
+  void searchText(String value) {
+    if(value.isEmpty){
+      _filteredProducts.clear();
+      _searchController=TextEditingController();
+    }else{
+      _searchController.text=value;
+    }
     notifyListeners();
   }
 

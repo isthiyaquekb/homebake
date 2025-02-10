@@ -66,7 +66,7 @@ class DetailScreen extends StatelessWidget {
                           height: MediaQuery.sizeOf(context).height * 0.45,
                           width: MediaQuery.sizeOf(context).width,
                           decoration: BoxDecoration(
-                            color: AppColor.primaryColor.withOpacity(0.4),
+                            color: AppColor.blackLight.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(16)
                           ),
                           child: Padding(
@@ -97,11 +97,11 @@ class DetailScreen extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child:  InkWell(
-                          onTap: (){
-                            provider.incrementCount();
-                          },
-                            child: buildCurvedButton(icon: AppAssets.add,alignment: Alignment.center,)),
+                        child: InkWell(
+                            onTap: (){
+                              provider.decrementCount();
+                            },
+                            child: buildCurvedButton(icon: AppAssets.minus,alignment: Alignment.center,)),
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -135,11 +135,11 @@ class DetailScreen extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: InkWell(
-                          onTap: (){
-                            provider.decrementCount();
-                          },
-                            child: buildCurvedButton(icon: AppAssets.minus,alignment: Alignment.center,)),
+                        child:  InkWell(
+                            onTap: (){
+                              provider.incrementCount();
+                            },
+                            child: buildCurvedButton(icon: AppAssets.add,alignment: Alignment.center,)),
                       ),
                     ],
                   ),
@@ -155,6 +155,7 @@ class DetailScreen extends StatelessWidget {
                     var cartItem=CartModel(productId: product.id, name: product.name, image: product.image, price: product.price, quantity: context.read<DetailViewModel>().count);
                     await cartProvider.addToCart(cartProvider.user!.uid.toString(), cartItem);
                     if(context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${product.name} added to cart')));
+                    Navigator.pop(context);
                     return true;
                   },
 

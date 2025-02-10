@@ -24,7 +24,7 @@ class HeaderWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(trailTitle),
-              Icon(
+              const Icon(
                 Icons.arrow_forward,
                 color: Colors.red,
                 size: 16,

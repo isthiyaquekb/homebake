@@ -25,6 +25,8 @@ class AuthViewmodel extends ChangeNotifier {
       TextEditingController();
   final TextEditingController _signupDobController = TextEditingController();
   final TextEditingController _signupGenderController = TextEditingController();
+  final TextEditingController _signupPhoneController = TextEditingController();
+  final TextEditingController _signupAddressController = TextEditingController();
   bool _isLoading = false;
   bool _isSignUpValid = false;
 
@@ -39,6 +41,8 @@ class AuthViewmodel extends ChangeNotifier {
       _signupLastNameController;
   TextEditingController get signupDobController => _signupDobController;
   TextEditingController get signupGenderController => _signupGenderController;
+  TextEditingController get signupPhoneController => _signupPhoneController;
+  TextEditingController get signupAddressController => _signupAddressController;
   bool get isLoading => _isLoading;
   bool get isSignUpValid => _isSignUpValid;
   final FirebaseServices _firebaseServices = FirebaseServices();
@@ -139,12 +143,15 @@ class AuthViewmodel extends ChangeNotifier {
           _signupFirstNameController.text,
           _signupLastNameController.text,
           _signupGenderController.text,
-          _signupDobController.text);
+          _signupDobController.text,
+          _signupPhoneController.text,
+          _signupAddressController.text,
+      );
     }
   }
 
   Future<bool> signUpApi(BuildContext context, String email, String password,
-      String firstname, String lastname, String gender, String dob) async {
+      String firstname, String lastname, String gender, String dob,String phone,String address) async {
     try {
       var response = await _firebaseServices.auth
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -160,6 +167,8 @@ class AuthViewmodel extends ChangeNotifier {
           email: email,
           userId: _user!.uid,
           gender: gender,
+          phone: phone,
+          address: address,
           dob: dob,
         );
         if (context.mounted) createUser(context, userData);

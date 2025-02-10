@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/services/firebase_services.dart';
 import 'package:home_bake/features/cart/model/cart_model.dart';
 import 'dart:developer';
@@ -26,17 +29,35 @@ class OrderViewModel extends ChangeNotifier{
 
     if (orderId.isNotEmpty) {
       print("Order placed successfully with ID: $orderId");
-      getOrders();
+      getOrdersStream();
       // Redirect user to order confirmation screen
     } else {
       print("Failed to place order");
     }
   }
 
+  Future<int> generateUniqueOrderNo() async {
+    final math.Random random = math.Random();
+    int orderNo;
 
+    // Loop until a unique order number is found
+    while (true) {
+      orderNo = 1000 + random.nextInt(9000); // Generates a random number between 1000-9999
+
+      // Check Firestore if this order number already exists
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection('orders')
+          .where('orderNo', isEqualTo: orderNo)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        return orderNo; // Found a unique number, return it
+      }
+    }
+  }
   Future<String> createOrder(String userId,List<Map<String, dynamic>> cartItems, double totalAmount) async {
     log("CART ITEM MAP: ${cartItems}");
-
+    int orderNo = await generateUniqueOrderNo();
     try {
       // Generate a unique order ID
       DocumentReference orderRef = _firebaseServices.fireStore.collection("orders").doc();
@@ -44,6 +65,7 @@ class OrderViewModel extends ChangeNotifier{
       // Create an order model
       OrderModel order = OrderModel(
         orderId: orderRef.id,
+        orderNo: orderNo, // New 4-digit order number
         userId: userId,
         items: cartItems,
         totalAmount: totalAmount,
@@ -111,20 +133,65 @@ class OrderViewModel extends ChangeNotifier{
     }
   }
 
-  ///FETCH ORDER FROM ORDER COLLECTIONS
-  Future<void> getOrders() async {
-    _isLoading = true;
-    notifyListeners();
+  // ///FETCH ORDER FROM ORDER COLLECTIONS
+  // Future<void> getOrders() async {
+  //   _isLoading = true;
+  //   notifyListeners();
+  //
+  //   try {
+  //     QuerySnapshot querySnapshot = await _firebaseServices.fireStore.collection('orders').get();
+  //     _orderList = querySnapshot.docs.map((doc) => OrderModel.fromDocumentSnapshot(doc)).toList();
+  //     log("TOTAL AMOUNT:${orderList[0].totalAmount}");
+  //   } catch (e) {
+  //     debugPrint("Error fetching orders: $e");
+  //   }
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
+  //STREAM ORDER FROM FIREBASE
 
-    try {
-      QuerySnapshot querySnapshot = await _firebaseServices.fireStore.collection('orders').get();
-      _orderList = querySnapshot.docs.map((doc) => OrderModel.fromDocumentSnapshot(doc)).toList();
-      log("TOTAL AMOUNT:${orderList[0].totalAmount}");
-    } catch (e) {
-      debugPrint("Error fetching orders: $e");
-    }
-    _isLoading = false;
-    notifyListeners();
+  Stream<List<OrderModel>> getOrdersStream() {
+    return FirebaseFirestore.instance
+        .collection('orders')
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) => OrderModel.fromDocumentSnapshot(doc))
+          .toList();
+    });
   }
 
+  Color getStatusColor(OrderStatus status) {
+    switch (status) {
+      case OrderStatus.newOrder:
+        return Colors.yellow.shade200;
+      case OrderStatus.accepted:
+        return Colors.blue.shade200;
+      case OrderStatus.rejected:
+        return Colors.red.shade200;
+      case OrderStatus.readyForPickup:
+        return Colors.indigo.shade200;
+      case OrderStatus.received:
+        return Colors.green.shade200;
+      default:
+        return Colors.grey.shade200; // Fallback color
+    }
+  }
+
+  String getStatusIcon(OrderStatus status) {
+    switch (status) {
+      case OrderStatus.newOrder:
+        return AppAssets.newOrder;
+      case OrderStatus.accepted:
+        return AppAssets.accepted;
+      case OrderStatus.rejected:
+        return AppAssets.rejected;
+      case OrderStatus.readyForPickup:
+        return AppAssets.readyForPickup;
+      case OrderStatus.received:
+        return AppAssets.orderReceived;
+      default:
+        return AppAssets.newOrder; // Fallback color
+    }
+  }
 }

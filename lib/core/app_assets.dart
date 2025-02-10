@@ -73,8 +73,12 @@ class AppAssets {
   static const String accepted = "assets/svg/circle-check-filled.svg";
   static const String pending = "assets/svg/clock-pending.svg";
   static const String newOrder = "assets/svg/new_order.svg";
-  static const String orderReceived = "assets/svg/order_received.svg";
+  static const String orderReceived = "assets/svg/gift.svg";
   static const String rejected = "assets/svg/reject.svg";
+  static const String readyForPickup = "assets/svg/order_received.svg";
+  static const String email = "assets/svg/email.svg";
+  static const String address = "assets/svg/location_p.svg";
+  static const String phone = "assets/svg/phone.svg";
 
 
 

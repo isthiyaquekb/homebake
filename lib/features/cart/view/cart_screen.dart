@@ -32,8 +32,7 @@ class CartScreen extends StatelessWidget {
                 child: Consumer<CartViewModel>(
                     builder: (context, cartProvider, child) =>
                         StreamBuilder<List<CartModel>>(
-                          stream:
-                              cartProvider.fetchCart(cartProvider.user!.uid),
+                          stream:cartProvider.fetchCart(cartProvider.user!.uid),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -46,6 +45,7 @@ class CartScreen extends StatelessWidget {
                               return const Text("CART IS EMPTY");
                             }
                             final cartItems = snapshot.data!;
+                            cartProvider.setCartCount(cartItems.length, cartItems);
                             return ListView.builder(
                               itemCount: cartItems.length,
                               itemBuilder: (context, index) => Padding(
@@ -232,27 +232,13 @@ class CartScreen extends StatelessWidget {
                             );
                           },
                         ))),
-            Consumer<CartViewModel>(builder: (context, provider, child) => InkWell(
-              onTap: (){
-
-                Provider.of<OrderViewModel>(context,listen: false).placeOrder(provider.user!.uid, provider.cartItems,);
+            Consumer<CartViewModel>(builder: (context, provider, child) => ElevatedButton(
+              onPressed: () {
+                Provider.of<OrderViewModel>(context,listen: false).placeOrder(provider.user!.uid, provider.cartItemsList,);
                 context.read<DashboardViewmodel>().setCurrentIndex(1);
-
               },
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                height: 40,
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                  color: Colors.green.shade100,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Center(
-                  child: Text(
-                    "Proceed to checkout",
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                ),
+              child: const Center(
+                child: Text("Proceed to checkout"),
               ),
             ),)
           ],

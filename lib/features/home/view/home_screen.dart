@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_bake/core/app_assets.dart';
+import 'package:home_bake/core/app_colors.dart';
 import 'package:home_bake/core/app_routes.dart';
 import 'package:home_bake/features/auth/view_model/auth_view_model.dart';
 import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
@@ -105,7 +108,7 @@ class HomeScreen extends StatelessWidget {
                 height: 20,
               ),
               //widget for search
-              Row(
+          Consumer<HomeViewModel>(builder: (context, provider, child) => Row(
                 children: [
                   Container(
                     height: 40,
@@ -123,35 +126,61 @@ class HomeScreen extends StatelessWidget {
                         ),
                         border: Border.all(color: Colors.black26)),
                     child: TextFormField(
+                      controller: provider.searchController,
                       decoration: InputDecoration(
                           hintText: "Search here...",
-                          enabledBorder: InputBorder.none,
                           contentPadding:
-                          EdgeInsets.only(left: 16, bottom: 10)),
+                          const EdgeInsets.only(left: 16, bottom: 10),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: const BorderSide(color: AppColor.whiteLight)
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: const BorderSide(color: AppColor.whiteLight)
+                        ),
+                        errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: const BorderSide(color: AppColor.darkError)
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: const BorderSide(color: AppColor.darkError)
+                        ),
+                      ),
+                      onChanged: (value) {
+                        log("SEARCH QUERY:$value");
+                        provider.searchText(value);
+                      },
                     ),
                   ),
-                  Container(
-                    height: 40,
-                    width: 40,
-                    margin: EdgeInsets.only(left: 4, right: 16),
-                    decoration: BoxDecoration(
-                        color: Colors.red.shade200,
-                        border: Border.all(color: Colors.black26),
-                        borderRadius: BorderRadius.only(
-                            bottomRight: Radius.circular(10),
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10))),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset(
-                        AppAssets.searchIcon,
-                        colorFilter:
-                        ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  InkWell(
+                    onTap: (){
+                      provider.search(provider.searchController.text);
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      margin: const EdgeInsets.only(left: 4, right: 16),
+                      decoration: BoxDecoration(
+                          color: Colors.red.shade200,
+                          border: Border.all(color: Colors.black26),
+                          borderRadius: const BorderRadius.only(
+                              bottomRight: Radius.circular(10),
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset(
+                          AppAssets.searchIcon,
+                          colorFilter:
+                          const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                        ),
                       ),
                     ),
                   ),
                 ],
-              ),
+              ),),
               const SizedBox(
                 height: 20,
               ),
@@ -174,17 +203,17 @@ class HomeScreen extends StatelessWidget {
                 height: 20,
               ),
               const HeaderWidget(
-                title: "Popular cakes", trailTitle: "See All",),
+                title: "Products", trailTitle: "See All",),
               SizedBox(
                 height: 250,
                 child: Consumer<HomeViewModel>(
                   builder: (context, homeViewProvider, child) =>
                       ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: homeViewProvider.productList.length,
+                        itemCount: homeViewProvider.filteredProducts.isEmpty?homeViewProvider.productList.length:homeViewProvider.filteredProducts.length,
                         itemBuilder: (context, index) =>
-                            PopularCakeItemWidget(selectedIndex:index,product: homeViewProvider
-                                .productList[index]),
+                            PopularCakeItemWidget(selectedIndex:index,product: homeViewProvider.filteredProducts.isEmpty?homeViewProvider
+                                .productList[index]:homeViewProvider.filteredProducts[index]),
                       ),),),
             ],
           ),

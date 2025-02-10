@@ -5,6 +5,7 @@ import 'package:home_bake/core/app_colors.dart';
 class AppTextFormWidget extends StatelessWidget {
   const AppTextFormWidget({
     super.key,
+    required this.isEnabled,
     required this.hint,
     required this.label,
     required this.textController,
@@ -13,6 +14,7 @@ class AppTextFormWidget extends StatelessWidget {
     this.onChange,
   });
 
+  final bool isEnabled;
   final String hint;
   final String label;
   final String? icon;
@@ -28,12 +30,17 @@ class AppTextFormWidget extends StatelessWidget {
         controller: textController,
         textInputAction: TextInputAction.next,
         style: Theme.of(context).textTheme.bodyMedium,
+        enabled: isEnabled,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: Theme.of(context).textTheme.bodyMedium,
           labelText: label,
           labelStyle: Theme.of(context).textTheme.bodyMedium,
           contentPadding: const EdgeInsets.symmetric(horizontal: 8,vertical: 0),
+          disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: const BorderSide(color: AppColor.whiteLight)
+          ),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5),
               borderSide: const BorderSide(color: AppColor.whiteLight)
@@ -52,7 +59,7 @@ class AppTextFormWidget extends StatelessWidget {
           ),
           prefixIcon:icon!=null? Padding(
             padding: const EdgeInsets.only(right: 8.0),
-            child: SvgPicture.asset(icon!,colorFilter: const ColorFilter.mode(AppColor.primaryColor, BlendMode.srcIn),height: 24,width: 24,fit: BoxFit.scaleDown,),
+            child: SvgPicture.asset(icon!,colorFilter: const ColorFilter.mode(AppColor.secondaryColor, BlendMode.srcIn),height: 24,width: 24,fit: BoxFit.scaleDown,),
           ):null,
         ),
         validator: validator,
