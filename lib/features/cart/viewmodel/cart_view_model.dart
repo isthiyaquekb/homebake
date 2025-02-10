@@ -135,4 +135,51 @@ class CartViewModel extends ChangeNotifier{
     }
   }
 
+  //CLEAR CART
+  Future<void> clearUserCart(String userId) async {
+    try {
+      var cartRef = _firebaseServices.fireStore.collection('carts').doc(userId);
+      var itemsRef = cartRef.collection('items');
+
+      // Get all cart items
+      var itemsSnapshot = await itemsRef.get();
+
+      // Delete each item document inside 'items' subcollection
+      for (var doc in itemsSnapshot.docs) {
+        await doc.reference.delete();
+      }
+
+      // Now delete the cart document itself
+      await cartRef.delete();
+      log("Cart cleared successfully for user: $userId");
+    } catch (e) {
+      log("Error clearing cart: $e");
+    }
+  }
+
+  //UPDATE INVENTORY
+  Future<void> updateInventory(List<CartModel> cartItems) async {
+    try {
+      var firestore = FirebaseFirestore.instance;
+
+      for (var item in cartItems) {
+        var productRef = firestore.collection('products').doc(item.productId);
+
+        await firestore.runTransaction((transaction) async {
+          var snapshot = await transaction.get(productRef);
+
+          if (!snapshot.exists) return;
+
+          int currentStock = snapshot['stock'] ?? 0;
+          int updatedStock = currentStock - item.quantity;
+
+          transaction.update(productRef, {'stock': updatedStock});
+        });
+      }
+
+      log("Inventory updated successfully");
+    } catch (e) {
+      log("Error updating inventory: $e");
+    }
+  }
 }

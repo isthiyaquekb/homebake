@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/services/firebase_services.dart';
 import 'package:home_bake/features/cart/model/cart_model.dart';
+import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
 import 'dart:developer';
 
 import 'package:home_bake/features/order/model/order_model.dart';
@@ -25,10 +26,11 @@ class OrderViewModel extends ChangeNotifier{
     List<Map<String, dynamic>> cartItemsMap = cartItems.map((item) => item.toMap()).toList();
     double totalAmount = cartItems.fold(0, (sum, item) => sum + (item.price * item.quantity));
 
-    String orderId = await OrderViewModel().createOrder(userId, cartItemsMap, totalAmount);
+    String orderId = await createOrder(userId, cartItemsMap, totalAmount);
 
     if (orderId.isNotEmpty) {
       print("Order placed successfully with ID: $orderId");
+      await CartViewModel().clearUserCart(userId);
       getOrdersStream();
       // Redirect user to order confirmation screen
     } else {

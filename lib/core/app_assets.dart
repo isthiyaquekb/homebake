@@ -87,7 +87,9 @@ class AppAssets {
   static const String notFoundLottie = "assets/lottie/not_found.json";
   static const String searchNotFoundLottie = "assets/lottie/search_not_found.json";
   static const String searchingLottie = "assets/lottie/searching.json";
-  static const String noInternetLottie = "assets/lottie/no_internet.json";
+  static const String noInternetLottie = "assets/lottie/no_connection.json";
   static const String loadingLottie = "assets/lottie/loading.json";
+  static const String successLottie = "assets/lottie/success.json";
+  static const String failureLottie = "assets/lottie/failed.json";
 
 }

@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/app_colors.dart';
+import 'package:home_bake/core/app_routes.dart';
 import 'package:home_bake/features/cart/model/cart_model.dart';
 import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
 import 'package:home_bake/features/dashboard/viewmodel/dashboard_viewmodel.dart';
 import 'package:home_bake/features/order/viewmodel/order_view_model.dart';
 import 'package:home_bake/widgets/common_app_bar.dart';
+import 'package:home_bake/widgets/order_complete_widget.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatelessWidget {
@@ -235,7 +237,8 @@ class CartScreen extends StatelessWidget {
             Consumer<CartViewModel>(builder: (context, provider, child) => ElevatedButton(
               onPressed: () {
                 Provider.of<OrderViewModel>(context,listen: false).placeOrder(provider.user!.uid, provider.cartItemsList,);
-                context.read<DashboardViewmodel>().setCurrentIndex(1);
+                // context.read<DashboardViewmodel>().setCurrentIndex(1);
+                Navigator.pushReplacementNamed(context, AppRoutes.success);
               },
               child: const Center(
                 child: Text("Proceed to checkout"),

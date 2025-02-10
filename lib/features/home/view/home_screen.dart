@@ -124,28 +124,44 @@ class HomeScreen extends StatelessWidget {
                           topLeft: Radius.circular(10),
                           topRight: Radius.circular(10),
                         ),
-                        border: Border.all(color: Colors.black26)),
+                        border: Border.all(color: AppColor.whiteLight)),
                     child: TextFormField(
                       controller: provider.searchController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           hintText: "Search here...",
                           contentPadding:
-                          const EdgeInsets.only(left: 16, bottom: 10),
+                          EdgeInsets.only(left: 16, bottom: 10),
                         focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: const BorderSide(color: AppColor.whiteLight)
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                            borderSide: BorderSide(color: AppColor.whiteLight)
                         ),
                         enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: const BorderSide(color: AppColor.whiteLight)
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                            borderSide: BorderSide(color: AppColor.whiteLight)
                         ),
                         errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: const BorderSide(color: AppColor.darkError)
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                            borderSide: BorderSide(color: AppColor.darkError)
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: const BorderSide(color: AppColor.darkError)
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                            borderSide: BorderSide(color: AppColor.darkError)
                         ),
                       ),
                       onChanged: (value) {
