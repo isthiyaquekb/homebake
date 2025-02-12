@@ -29,174 +29,183 @@ class HomeScreen extends StatelessWidget {
       key:context.read<HomeViewModel>().globalKey,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 46.0, left: 16.0, bottom: 16.0),
+          padding: const EdgeInsets.only(top: 46.0, bottom: 16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //widgets for menu and cart
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        AppAssets.locationIcon,
-                        height: 24,
-                        width: 24,
-                      ),
-                      Padding(
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("Minicoy Island,Lakshadweep",style: Theme.of(context).textTheme.labelLarge),
-                      ),
-                    ],
-                  ),
-                  Consumer<AuthViewmodel>(builder: (context, provider, child) => InkWell(
-                    onTap: ()async{
-                      await provider.logout();
-                      if(context.mounted) Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: SvgPicture.asset(AppAssets.logoutIcon,height: 24,width: 24,),
-                    ),
-                  ),)
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              //widget to display locations
-              Container(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 0.25,
-                width: double.maxFinite,
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      alignment: Alignment.centerRight,
-                      image:  AssetImage(
-                        AppAssets.homeBackground,
-                      ),
-
-                    )
-                ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Consumer<HomeViewModel>(builder: (context, provider, child) =>  provider.area.isNotEmpty?Row(
                       children: [
-                        //widget to headline
-                        Container(
-                          margin: EdgeInsets.only(top:MediaQuery.sizeOf(context).height*0.10),
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.55,
-                            child: const Text("What would you like to eat today?",style: TextStyle(fontSize: 24,fontWeight: FontWeight.w600),)),
+                        SvgPicture.asset(
+                          AppAssets.locationIcon,
+                          height: 24,
+                          width: 24,
+                        ),
+                        Padding(
+                          padding:
+                          const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text("${provider.area},${provider.city},${provider.state}",style: Theme.of(context).textTheme.labelLarge),
+                        ),
                       ],
-                    ),
+                    ):const SizedBox.shrink(),),
+                    Consumer<AuthViewmodel>(builder: (context, provider, child) => InkWell(
+                      onTap: ()async{
+                        await provider.logout();
+                        if(context.mounted) Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: SvgPicture.asset(AppAssets.logoutIcon,height: 24,width: 24,),
+                      ),
+                    ),)
                   ],
                 ),
               ),
               const SizedBox(
                 height: 20,
               ),
+              //widget to display locations
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Container(
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height * 0.25,
+                  width: double.maxFinite,
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        alignment: Alignment.centerRight,
+                        image:  AssetImage(
+                          AppAssets.homeBackground,
+                        ),
+
+                      )
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          //widget to headline
+                          Container(
+                            margin: EdgeInsets.only(top:MediaQuery.sizeOf(context).height*0.10),
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 0.55,
+                              child:  Text("What would you like to eat today?",style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: MediaQuery.sizeOf(context).height*0.035,fontWeight: FontWeight.w600),)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               //widget for search
-          Consumer<HomeViewModel>(builder: (context, provider, child) => Row(
-                children: [
-                  Container(
-                    height: 40,
-                    margin: const EdgeInsets.only(right: 8),
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width - 72 - 16,
-                    decoration: BoxDecoration(
-                        color: Colors.green.shade200,
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
-                        ),
-                        border: Border.all(color: AppColor.whiteLight)),
-                    child: TextFormField(
-                      controller: provider.searchController,
-                      decoration: const InputDecoration(
-                          hintText: "Search here...",
-                          contentPadding:
-                          EdgeInsets.only(left: 16, bottom: 10),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
-                            ),
-                            borderSide: BorderSide(color: AppColor.whiteLight)
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
-                            ),
-                            borderSide: BorderSide(color: AppColor.whiteLight)
-                        ),
-                        errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
-                            ),
-                            borderSide: BorderSide(color: AppColor.darkError)
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
-                            ),
-                            borderSide: BorderSide(color: AppColor.darkError)
-                        ),
-                      ),
-                      onChanged: (value) {
-                        log("SEARCH QUERY:$value");
-                        provider.searchText(value);
-                      },
-                    ),
-                  ),
-                  InkWell(
-                    onTap: (){
-                      provider.search(provider.searchController.text);
-                    },
-                    child: Container(
+          Consumer<HomeViewModel>(builder: (context, provider, child) => Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Row(
+                  children: [
+                    Container(
                       height: 40,
-                      width: 40,
-                      margin: const EdgeInsets.only(left: 4, right: 16),
+                      margin: const EdgeInsets.only(right: 8),
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width - 72 - 16,
                       decoration: BoxDecoration(
-                          color: Colors.red.shade200,
-                          border: Border.all(color: Colors.black26),
+                          color: Colors.green.shade200,
                           borderRadius: const BorderRadius.only(
-                              bottomRight: Radius.circular(10),
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SvgPicture.asset(
-                          AppAssets.searchIcon,
-                          colorFilter:
-                          const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                            bottomLeft: Radius.circular(10),
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
+                          ),
+                          border: Border.all(color: AppColor.whiteLight)),
+                      child: TextFormField(
+                        controller: provider.searchController,
+                        decoration: const InputDecoration(
+                            hintText: "Search here...",
+                            contentPadding:
+                            EdgeInsets.only(left: 16, bottom: 10),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
+                              borderSide: BorderSide(color: AppColor.whiteLight)
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
+                              borderSide: BorderSide(color: AppColor.whiteLight)
+                          ),
+                          errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
+                              borderSide: BorderSide(color: AppColor.darkError)
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
+                              borderSide: BorderSide(color: AppColor.darkError)
+                          ),
+                        ),
+                        onChanged: (value) {
+                          log("SEARCH QUERY:$value");
+                          provider.searchText(value);
+                        },
+                      ),
+                    ),
+                    InkWell(
+                      onTap: (){
+                        provider.search(provider.searchController.text);
+                      },
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        margin: const EdgeInsets.only(left: 4, right: 16),
+                        decoration: BoxDecoration(
+                            color: Colors.red.shade200,
+                            border: Border.all(color: Colors.black26),
+                            borderRadius: const BorderRadius.only(
+                                bottomRight: Radius.circular(10),
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10))),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SvgPicture.asset(
+                            AppAssets.searchIcon,
+                            colorFilter:
+                            const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),),
+                  ],
+                ),
+          ),),
               const SizedBox(
                 height: 20,
               ),
@@ -205,16 +214,19 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              SizedBox(
-                  height: 120,
-                  child: Consumer<HomeViewModel>(
-                    builder: (context, provider, child) =>
-                        ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: provider.categoryList.length,
-                          itemBuilder: (context, index) =>
-                              CategoryItemWidget(selectedIndex:index, categoryData: provider.categoryList[index],),
-                        ),)),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: SizedBox(
+                    height: 120,
+                    child: Consumer<HomeViewModel>(
+                      builder: (context, provider, child) =>
+                          ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: provider.categoryList.length,
+                            itemBuilder: (context, index) =>
+                                CategoryItemWidget(selectedIndex:index, categoryData: provider.categoryList[index],),
+                          ),)),
+              ),
               const SizedBox(
                 height: 20,
               ),

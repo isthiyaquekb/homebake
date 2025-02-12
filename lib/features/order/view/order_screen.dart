@@ -7,6 +7,7 @@ import 'package:home_bake/features/order/model/order_model.dart';
 import 'package:home_bake/features/order/model/order_status.dart';
 import 'package:home_bake/features/order/viewmodel/order_view_model.dart';
 import 'package:home_bake/widgets/common_app_bar.dart';
+import 'package:home_bake/widgets/no_order_widget.dart';
 import 'package:provider/provider.dart';
 
 class OrderScreen extends StatelessWidget {
@@ -20,6 +21,7 @@ class OrderScreen extends StatelessWidget {
       orderViewModel.getOrdersStream();
     });
     return Scaffold(
+      backgroundColor: AppColor.white,
       appBar: const CommonAppBar(title: 'Order', actionList: []),
       body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -35,7 +37,7 @@ class OrderScreen extends StatelessWidget {
               }
 
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Text("ORDER IS EMPTY");
+                return const NoOrderWidget();
               }
               final orderList = snapshot.data!;
               return ListView.builder(

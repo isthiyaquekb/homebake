@@ -32,6 +32,7 @@ class AppAssets {
   static const String categoryChips = "assets/jpg/chips.jpeg";
   static const String categoryBiscuit = "assets/jpg/biscuit.jpeg";
   static const String imageNotFound = "assets/jpg/no_image_found.jpg";
+  static const String dummyProfile = "assets/jpg/7ehxai.jpg";
 
   //SVG ICONS
   static const String menu = "assets/svg/nav_menu.svg";
@@ -79,6 +80,7 @@ class AppAssets {
   static const String email = "assets/svg/email.svg";
   static const String address = "assets/svg/location_p.svg";
   static const String phone = "assets/svg/phone.svg";
+  static const String cross = "assets/svg/close_square.svg";
 
 
 
@@ -91,5 +93,7 @@ class AppAssets {
   static const String loadingLottie = "assets/lottie/loading.json";
   static const String successLottie = "assets/lottie/success.json";
   static const String failureLottie = "assets/lottie/failed.json";
+  static const String emptyCartLottie = "assets/lottie/add_to_cart.json";
+  static const String noOrdersLottie = "assets/lottie/no_order_available.json";
 
 }

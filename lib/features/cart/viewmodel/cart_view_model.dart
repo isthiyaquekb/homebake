@@ -160,12 +160,11 @@ class CartViewModel extends ChangeNotifier{
   //UPDATE INVENTORY
   Future<void> updateInventory(List<CartModel> cartItems) async {
     try {
-      var firestore = FirebaseFirestore.instance;
 
       for (var item in cartItems) {
-        var productRef = firestore.collection('products').doc(item.productId);
+        var productRef = _firebaseServices.fireStore.collection('products').doc(item.productId);
 
-        await firestore.runTransaction((transaction) async {
+        await _firebaseServices.fireStore.runTransaction((transaction) async {
           var snapshot = await transaction.get(productRef);
 
           if (!snapshot.exists) return;

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class AppColor {
   AppColor._();
 
-  static const Color primaryColor = Color(0xFF4BE2E3);
+  static const Color primaryColor = Color(0xFF1AB336);
   static const Color secondaryColor = Color(0xFFF73917);
-  static const Color bottomNavBarColor = Color(0xFFDA9B61);
+  static const Color accentColor = Color(0xFFDA9B61);
   static const Color bottomBar= Color(0xFF0A75F1);
   static const Color scaffoldBackground =Color(0xFFECEBEC);
   static const Color scaffoldBackgroundLight =Color(0xFFFFFFFF);

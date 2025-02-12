@@ -19,7 +19,7 @@ class DashboardScreen extends StatelessWidget {
     return Consumer<DashboardViewmodel>(builder: (context, dashboardViewModel, child) => Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: AppColor.secondaryColor,
-        selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
         unselectedItemColor: AppColor.darkTextColor,
         items: [
           BottomNavigationBarItem(

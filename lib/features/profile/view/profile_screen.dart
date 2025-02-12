@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/features/auth/model/user_model.dart';
 import 'package:home_bake/features/profile/viewmodel/profile_viewmodel.dart';
@@ -17,7 +18,16 @@ class ProfileScreen extends StatelessWidget {
       profileViewmodel.onInit();
     });
     return Scaffold(
-      appBar: const CommonAppBar(title: 'Profile', actionList: []),
+      appBar: CommonAppBar(title: 'Profile', actionList: [
+        Consumer<ProfileViewmodel>(builder: (context, provider, child) => Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: InkWell(
+            onTap: (){
+              provider.enableEdit(!provider.isEnabled);
+            },
+              child: SvgPicture.asset(provider.isEnabled?AppAssets.cross:AppAssets.editIcon)),
+        ),)
+      ]),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -45,8 +55,14 @@ class ProfileScreen extends StatelessWidget {
                       width: 120,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(60),
-                        color: Colors.amber.shade200,
+                        color: provider.isEnabled?Colors.green.shade200:Colors.amber.shade200,
                         border: Border.all(color: Colors.white54),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(60),
+                            child: const Image(image: AssetImage(AppAssets.dummyProfile),)),
                       ),
                     ),
                   ),
@@ -57,79 +73,107 @@ class ProfileScreen extends StatelessWidget {
                   ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0,horizontal: 12),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AppTextFormWidget(
-                            hint: "First name",
-                            label: "First name",
-                            isEnabled: false,
-                            validator: (p0) {
+                      child: Form(
+                        key: provider.formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AppTextFormWidget(
+                              hint: "First name",
+                              label: "First name",
+                              inputType: TextInputType.name,
+                              isEnabled: provider.isEnabled,
+                              maxLines: 1,
+                              validator: (p0) {
 
-                            },
-                            textController: provider.firstController,
-                            icon: AppAssets.userProfile,
-                            onChange: (p0) {
+                              },
+                              textController: provider.firstController,
+                              icon: AppAssets.userProfile,
+                              onChange: (p0) {
 
-                            },
-                          ),
-                          AppTextFormWidget(
-                            hint: "Last name",
-                            label: "Last name",
-                            isEnabled: false,
-                            validator: (p0) {
+                              },
+                            ),
+                            AppTextFormWidget(
+                              hint: "Last name",
+                              label: "Last name",
+                              inputType: TextInputType.name,
+                              isEnabled: provider.isEnabled,
+                              maxLines: 1,
+                              validator: (p0) {
 
-                            },
-                            textController: provider.lastController,
-                            icon: AppAssets.userProfile,
-                            onChange: (p0) {
+                              },
+                              textController: provider.lastController,
+                              icon: AppAssets.userProfile,
+                              onChange: (p0) {
 
-                            },
-                          ),
-                          AppTextFormWidget(
-                            hint: "Email",
-                            label: "Email",
-                            isEnabled: false,
-                            validator: (p0) {
+                              },
+                            ),
+                            AppTextFormWidget(
+                              hint: "Email",
+                              label: "Email",
+                              inputType: TextInputType.emailAddress,
+                              isEnabled: provider.isEnabled,
+                              maxLines: 1,
+                              validator: (p0) {
 
-                            },
-                            textController: provider.emailController,
-                            icon: AppAssets.email,
-                            onChange: (p0) {
+                              },
+                              textController: provider.emailController,
+                              icon: AppAssets.email,
+                              onChange: (p0) {
 
-                            },
-                          ),
-                          AppTextFormWidget(
-                            hint: "Phone",
-                            label: "Phone",
-                            isEnabled: false,
-                            validator: (p0) {
+                              },
+                            ),
+                            AppTextFormWidget(
+                              hint: "Phone",
+                              label: "Phone",
+                              inputType: TextInputType.phone,
+                              isEnabled: provider.isEnabled,
+                              maxLines: 1,
+                              validator: (p0) {
 
-                            },
-                            textController: provider.phoneController,
-                            icon: AppAssets.phone,
-                            onChange: (p0) {
+                              },
+                              textController: provider.phoneController,
+                              icon: AppAssets.phone,
+                              onChange: (p0) {
 
-                            },
-                          ),
-                          AppTextFormWidget(
-                            hint: "Address",
-                            label: "Address",
-                            isEnabled: false,
-                            validator: (p0) {
+                              },
+                            ),
+                            AppTextFormWidget(
+                              hint: "Address",
+                              label: "Address",
+                              inputType: TextInputType.text,
+                              isEnabled: provider.isEnabled,
+                              maxLines: 1,
+                              validator: (p0) {
 
-                            },
-                            textController: provider.addressController,
-                            icon: AppAssets.address,
-                            onChange: (p0) {
+                              },
+                              textController: provider.addressController,
+                              icon: AppAssets.address,
+                              onChange: (p0) {
 
-                            },
-                          ),
-                        ],
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),),
+
+                  provider.isEnabled?Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.sizeOf(context).width*0.2),
+                    child: ElevatedButton(
+                      onPressed: () {
+
+                        Provider.of<ProfileViewmodel>(context,listen: false).updateSession();
+                        // context.read<DashboardViewmodel>().setCurrentIndex(1);
+                        // Navigator.pushReplacementNamed(context, AppRoutes.success);
+                      },
+                      child: const Center(
+                        child: Text("Update"),
+                      ),
+                    ),
+                  ):const SizedBox.shrink()
                 ],
               );
             },);

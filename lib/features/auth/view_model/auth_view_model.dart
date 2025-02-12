@@ -7,21 +7,23 @@ import 'package:get_storage/get_storage.dart';
 import 'package:home_bake/core/app_keys.dart';
 import 'package:home_bake/core/services/firebase_services.dart';
 import 'package:home_bake/features/auth/model/user_model.dart';
+import 'package:home_bake/utils/snackbars.dart';
 
 class AuthViewmodel extends ChangeNotifier {
   final storageBox = GetStorage();
   final loginFormKey = GlobalKey<FormState>();
   final signupFormKey = GlobalKey<FormState>();
+  final forgotFormKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   ///SIGN UP CONTROLLER
-  final TextEditingController _signupEmailController = TextEditingController();
-  final TextEditingController _signupPasswordController =
+  TextEditingController _signupEmailController = TextEditingController();
+  TextEditingController _signupPasswordController =
       TextEditingController();
-  final TextEditingController _signupFirstNameController =
+  TextEditingController _signupFirstNameController =
       TextEditingController();
-  final TextEditingController _signupLastNameController =
+  TextEditingController _signupLastNameController =
       TextEditingController();
   final TextEditingController _signupDobController = TextEditingController();
   final TextEditingController _signupGenderController = TextEditingController();
@@ -181,25 +183,95 @@ class AuthViewmodel extends ChangeNotifier {
       }
     } on FirebaseAuthException catch (firebaseException) {
       // isLoading.value=false;
-      throw firebaseException.code;
+      if (firebaseException.code == 'network-request-failed') {
+        warningSnackBar(context, 'No Interner Connection');
+      } else if (firebaseException.code == "wrong-password") {
+        failureSnackBar(context, 'Please Enter correct password');
+        //devtools.log('Please Enter correct password');
+        //print('Please Enter correct password');
+      } else if (firebaseException.code == 'user-not-found') {
+        warningSnackBar(context, 'Email not found');
+        // print('Email not found');
+      }  else if (firebaseException.code == 'too-many-requests') {
+         failureSnackBar(context, 'Too many attempts please try later');
+        //print('Too many attempts please try later');
+      } else if (firebaseException.code == 'unknwon') {
+
+        warningSnackBar(context, 'Email and password field are required');
+        //print('Email and password field are required');
+      } else if (firebaseException.code == 'email-already-in-use') {
+
+        warningSnackBar(context, 'Email already in use, sign in');
+        Navigator.pop(context);
+
+        clearField();
+
+      } else {
+        print(firebaseException.code);
+      }
+      rethrow;
     } catch (e) {
       // isLoading.value=false;
       throw e.toString();
     }
   }
 
-  void createUser(BuildContext context, UserModel userData) async {
-    // Determine collection based on role
-    String collection = (userData.role == "admin") ? "Admins" : "Users";
+  void clearField(){
+    _signupFirstNameController=TextEditingController();
+    _signupLastNameController=TextEditingController();
+    _signupEmailController=TextEditingController();
+    _signupPasswordController=TextEditingController();
 
-    await _firebaseServices.fireStore
-        .collection(collection)
-        .add(userData.toJson())
-        .whenComplete(() => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Your account has been created"))))
-        .catchError((error, stackTrace) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Something went wrong")));
-    });
+  }
+  void createUser(BuildContext context, UserModel userData) async {
+    try{
+      // Determine collection based on role
+      String collection = (userData.role == "admin") ? "Admins" : "Users";
+
+      await _firebaseServices.fireStore
+          .collection(collection)
+          .add(userData.toJson())
+          .whenComplete(() => successSnackBar(context,"Your account has been created successfully")
+      )
+          .catchError((error, stackTrace) {
+        failureSnackBar(context,"Something went wrong");
+      });
+      Navigator.of(context).pop();
+    }on FirebaseAuthException catch (e){
+      if (e.code == 'network-request-failed') {
+        warningSnackBar(context, 'No Interner Connection');
+      } else if (e.code == "wrong-password") {
+        return failureSnackBar(context, 'Please Enter correct password');
+        //devtools.log('Please Enter correct password');
+        //print('Please Enter correct password');
+      } else if (e.code == 'user-not-found') {
+        warningSnackBar(context, 'Email not found');
+        // print('Email not found');
+      }  else if (e.code == 'too-many-requests') {
+        return failureSnackBar(context, 'Too many attempts please try later');
+        //print('Too many attempts please try later');
+      } else if (e.code == 'unknwon') {
+
+        warningSnackBar(context, 'Email and password field are required');
+        //print('Email and password field are required');
+      } else if (e.code == 'unknown') {
+        warningSnackBar(context, 'Email and password field are required');
+        //print(e.code);
+      } else {
+        print(e.code);
+      }
+    }
+  }
+
+  /// Send password reset email
+  Future<void> sendPasswordResetEmail(BuildContext context,String email) async {
+    try {
+      await _firebaseServices.auth.sendPasswordResetEmail(email: email);
+      print("Password reset email sent to $email");
+      successSnackBar(context, 'Password reset email sent to $email');
+    } catch (e) {
+      print("Error sending password reset email: $e");
+      throw e;
+    }
   }
 }

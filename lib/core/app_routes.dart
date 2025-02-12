@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:home_bake/features/auth/view/forgot_password_screen.dart';
 import 'package:home_bake/features/auth/view/signup_screen.dart';
 import 'package:home_bake/features/cart/view/cart_screen.dart';
 import 'package:home_bake/features/cart/view/order_success_page.dart';
@@ -18,6 +19,7 @@ abstract class AppRoutes {
   static const onBoard = '/on-board';
   static const login = '/login';
   static const signUp = '/sign-up';
+  static const forgotPassword = '/forgot-password';
   static const dashboard = '/dashboard';
   static const home = '/home';
   static const details = '/details';
@@ -42,6 +44,10 @@ abstract class AppRoutes {
 
       case signUp:
         return MaterialPageRoute(builder: (context) => SignupScreen());
+
+      case forgotPassword:
+        return MaterialPageRoute(builder: (context) => ForgotPasswordScreen());
+
       case dashboard:
         return MaterialPageRoute(builder: (context) => DashboardScreen());
 

@@ -9,7 +9,7 @@ import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
 import 'package:home_bake/features/dashboard/viewmodel/dashboard_viewmodel.dart';
 import 'package:home_bake/features/order/viewmodel/order_view_model.dart';
 import 'package:home_bake/widgets/common_app_bar.dart';
-import 'package:home_bake/widgets/order_complete_widget.dart';
+import 'package:home_bake/widgets/empty_cart_widget.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatelessWidget {
@@ -23,6 +23,7 @@ class CartScreen extends StatelessWidget {
       cartViewmodel.init();
     });
     return Scaffold(
+      backgroundColor: AppColor.white,
       appBar: const CommonAppBar(title: 'Cart', actionList: []),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -44,7 +45,9 @@ class CartScreen extends StatelessWidget {
                             }
 
                             if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                              return const Text("CART IS EMPTY");
+                              return InkWell(onTap: (){
+                                context.read<DashboardViewmodel>().setCurrentIndex(0);
+                              },child: const EmptyCart());
                             }
                             final cartItems = snapshot.data!;
                             cartProvider.setCartCount(cartItems.length, cartItems);
@@ -234,7 +237,7 @@ class CartScreen extends StatelessWidget {
                             );
                           },
                         ))),
-            Consumer<CartViewModel>(builder: (context, provider, child) => ElevatedButton(
+            Consumer<CartViewModel>(builder: (context, provider, child) => provider.cartItemsList.isNotEmpty?ElevatedButton(
               onPressed: () {
                 Provider.of<OrderViewModel>(context,listen: false).placeOrder(provider.user!.uid, provider.cartItemsList,);
                 // context.read<DashboardViewmodel>().setCurrentIndex(1);
@@ -243,7 +246,7 @@ class CartScreen extends StatelessWidget {
               child: const Center(
                 child: Text("Proceed to checkout"),
               ),
-            ),)
+            ):const SizedBox.shrink(),)
           ],
         ),
       ),

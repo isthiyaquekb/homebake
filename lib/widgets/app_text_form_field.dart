@@ -7,8 +7,10 @@ class AppTextFormWidget extends StatelessWidget {
     super.key,
     required this.isEnabled,
     required this.hint,
+    required this.inputType,
     required this.label,
     required this.textController,
+    required this.maxLines,
     this.icon,
     required this.validator,
     this.onChange,
@@ -16,9 +18,11 @@ class AppTextFormWidget extends StatelessWidget {
 
   final bool isEnabled;
   final String hint;
+  final TextInputType inputType;
   final String label;
   final String? icon;
   final TextEditingController textController;
+  final int maxLines;
   final String? Function(String?) validator; // Updated to function type
   final String? Function(String?)? onChange; // Updated to function type
 
@@ -29,8 +33,10 @@ class AppTextFormWidget extends StatelessWidget {
       child: TextFormField(
         controller: textController,
         textInputAction: TextInputAction.next,
+        keyboardType: inputType,
         style: Theme.of(context).textTheme.bodyMedium,
         enabled: isEnabled,
+        maxLines: maxLines,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: Theme.of(context).textTheme.bodyMedium,
@@ -47,7 +53,7 @@ class AppTextFormWidget extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5),
-              borderSide: const BorderSide(color: AppColor.whiteLight)
+              borderSide: const BorderSide(color: AppColor.primaryColor)
           ),
           errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5),
@@ -59,7 +65,7 @@ class AppTextFormWidget extends StatelessWidget {
           ),
           prefixIcon:icon!=null? Padding(
             padding: const EdgeInsets.only(right: 8.0),
-            child: SvgPicture.asset(icon!,colorFilter: const ColorFilter.mode(AppColor.secondaryColor, BlendMode.srcIn),height: 24,width: 24,fit: BoxFit.scaleDown,),
+            child: SvgPicture.asset(icon!,colorFilter: ColorFilter.mode(isEnabled?AppColor.primaryColor:AppColor.secondaryColor, BlendMode.srcIn),height: 24,width: 24,fit: BoxFit.scaleDown,),
           ):null,
         ),
         validator: validator,
