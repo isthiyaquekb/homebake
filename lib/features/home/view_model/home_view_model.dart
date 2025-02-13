@@ -5,10 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/services/firebase_services.dart';
 import 'package:home_bake/features/home/model/category_model.dart';
-import 'package:home_bake/features/home/model/popular_cake_model.dart';
 import 'package:home_bake/features/home/model/product_model.dart';
 import 'package:home_bake/utils/app_permissions.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -168,6 +166,11 @@ class HomeViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
+  void clearSearch(){
+    _filteredProducts.clear();
+    _searchController.clear();
+    notifyListeners();
+  }
   void searchText(String value) {
     if(value.isEmpty){
       _filteredProducts.clear();
@@ -180,7 +183,8 @@ class HomeViewModel extends ChangeNotifier{
 
   Future<Position> getCurrentLocation() async {
 
-    return await Geolocator.getCurrentPosition();
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
 
   }
 

@@ -180,7 +180,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                     InkWell(
                       onTap: (){
-                        provider.search(provider.searchController.text);
+                        provider.filteredProducts.isNotEmpty?provider.clearSearch():provider.search(provider.searchController.text);
+                        FocusScope.of(context).unfocus();
                       },
                       child: Container(
                         height: 40,
@@ -196,7 +197,7 @@ class HomeScreen extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: SvgPicture.asset(
-                            AppAssets.searchIcon,
+                            provider.filteredProducts.isNotEmpty?AppAssets.closeIcon:AppAssets.searchIcon,
                             colorFilter:
                             const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                           ),

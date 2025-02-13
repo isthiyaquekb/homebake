@@ -81,6 +81,7 @@ class AppAssets {
   static const String address = "assets/svg/location_p.svg";
   static const String phone = "assets/svg/phone.svg";
   static const String cross = "assets/svg/close_square.svg";
+  static const String closeIcon = "assets/svg/close_icon.svg";
 
 
 

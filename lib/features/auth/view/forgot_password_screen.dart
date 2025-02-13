@@ -13,7 +13,7 @@ class ForgotPasswordScreen extends StatelessWidget {
     return Scaffold(
       appBar: const CommonAppBar(title: "Forgot password",actionList: [],),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Consumer<AuthViewmodel>(builder: (context, provider, child) => Form(
           key: provider.forgotFormKey,
           child: Column(
