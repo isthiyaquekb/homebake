@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/app_colors.dart';
@@ -22,6 +23,7 @@ class CategoryItemWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(35),
         onTap:() {
           context.read<HomeViewModel>().setCategory(selectedIndex);
+          context.read<HomeViewModel>().filterProductByCategoryName(categoryData.name);
         },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(35),
@@ -39,7 +41,7 @@ class CategoryItemWidget extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: ClipRRect(borderRadius: BorderRadius.circular(60),child: Image(image: AssetImage(categoryData.image),fit: BoxFit.cover,)),
+                  child: ClipRRect(borderRadius: BorderRadius.circular(60),child: CachedNetworkImage(imageUrl: categoryData.image,fit: BoxFit.cover,errorWidget: (context, url, error) => Image(image: AssetImage(AppAssets.imageNotFound),fit: BoxFit.cover),),),
                 ),
               ),
               const SizedBox(height: 10,),

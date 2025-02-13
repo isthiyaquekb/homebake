@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class AppColor {
   AppColor._();
 
-  static const Color primaryColor = Color(0xFF4BE2E3);
+  static const Color primaryColor = Color(0xFF1AB336);
   static const Color secondaryColor = Color(0xFFF73917);
-  static const Color bottomNavBarColor = Color(0xFFDA9B61);
+  static const Color accentColor = Color(0xFFDA9B61);
   static const Color bottomBar= Color(0xFF0A75F1);
   static const Color scaffoldBackground =Color(0xFFECEBEC);
   static const Color scaffoldBackgroundLight =Color(0xFFFFFFFF);
@@ -39,6 +39,7 @@ class AppColor {
 
   static const Color darkIndicator = Color(0xff929292);
   static const Color inActiveColor = Color(0xff929292);
+  static const Color borderColor = Color(0xffD9D9D9);
 
   static const Color detailBGColor = Color(0xFF06070B);
   static const Color greyTextColor = Color(0xFFDAE0E1);
@@ -46,5 +47,6 @@ class AppColor {
   static const Color thunderStormColor = Color(0xFFDAE0E1);
   static const Color sunnyColor = Color(0xFF7F863E);
   static const Color cloudyColor = Color(0xFF26ADA0);
+  static const Color successColor = Color(0xFF34eb3a);
 
 }

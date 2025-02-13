@@ -31,11 +31,14 @@ class AppAssets {
   static const String categoryCake = "assets/jpg/cake_dummy.jpg";
   static const String categoryChips = "assets/jpg/chips.jpeg";
   static const String categoryBiscuit = "assets/jpg/biscuit.jpeg";
+  static const String imageNotFound = "assets/jpg/no_image_found.jpg";
+  static const String dummyProfile = "assets/jpg/7ehxai.jpg";
 
   //SVG ICONS
   static const String menu = "assets/svg/nav_menu.svg";
   static const String home = "assets/svg/home.svg";
   static const String cart = "assets/svg/cart_icon.svg";
+  static const String cartFilled = "assets/svg/cart_filled.svg";
   static const String homeFilled = "assets/svg/home_filled.svg";
   static const String nextIcon = "assets/svg/next_icon.svg";
   static const String startIcon = "assets/svg/start_icon.svg";
@@ -59,6 +62,26 @@ class AppAssets {
   static const String backIcon = "assets/svg/back.svg";
   static const String favouriteIcon = "assets/svg/favourite_filled.svg";
   static const String unfilledFavourite = "assets/svg/favourite_unfilled.svg";
+  static const String minus = "assets/svg/minus_square.svg";
+  static const String add = "assets/svg/add_square.svg";
+  static const String userProfile = "assets/svg/user_icon.svg";
+  static const String userProfileFilled = "assets/svg/user_filled.svg";
+  static const String backArrow = "assets/svg/back_arrow.svg";
+  static const String bag = "assets/svg/bag.svg";
+  static const String bagFilled = "assets/svg/bag_filled.svg";
+  static const String bag2 = "assets/svg/bag-2.svg";
+  static const String bag2filled = "assets/svg/bag-2-filled.svg";
+  static const String accepted = "assets/svg/circle-check-filled.svg";
+  static const String pending = "assets/svg/clock-pending.svg";
+  static const String newOrder = "assets/svg/new_order.svg";
+  static const String orderReceived = "assets/svg/gift.svg";
+  static const String rejected = "assets/svg/reject.svg";
+  static const String readyForPickup = "assets/svg/order_received.svg";
+  static const String email = "assets/svg/email.svg";
+  static const String address = "assets/svg/location_p.svg";
+  static const String phone = "assets/svg/phone.svg";
+  static const String cross = "assets/svg/close_square.svg";
+  static const String closeIcon = "assets/svg/close_icon.svg";
 
 
 
@@ -67,7 +90,11 @@ class AppAssets {
   static const String notFoundLottie = "assets/lottie/not_found.json";
   static const String searchNotFoundLottie = "assets/lottie/search_not_found.json";
   static const String searchingLottie = "assets/lottie/searching.json";
-  static const String noInternetLottie = "assets/lottie/no_internet.json";
+  static const String noInternetLottie = "assets/lottie/no_connection.json";
   static const String loadingLottie = "assets/lottie/loading.json";
+  static const String successLottie = "assets/lottie/success.json";
+  static const String failureLottie = "assets/lottie/failed.json";
+  static const String emptyCartLottie = "assets/lottie/add_to_cart.json";
+  static const String noOrdersLottie = "assets/lottie/no_order_available.json";
 
 }

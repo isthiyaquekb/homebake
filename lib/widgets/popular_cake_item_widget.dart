@@ -1,7 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/app_colors.dart';
 import 'package:home_bake/core/app_routes.dart';
+import 'package:home_bake/features/cart/model/cart_model.dart';
+import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
 import 'package:home_bake/features/home/model/popular_cake_model.dart';
 import 'package:home_bake/features/home/model/product_model.dart';
 import 'package:home_bake/features/home/view_model/home_view_model.dart';
@@ -24,11 +27,11 @@ class PopularCakeItemWidget extends StatelessWidget {
         children: [
           InkWell(
             onTap: (){
-              Navigator.pushNamed(context, AppRoutes.details);
+              Navigator.pushNamed(context, AppRoutes.details,arguments: product);
               context.read<HomeViewModel>().setPopular(selectedIndex);
             },
             child: Container(margin: const EdgeInsets.only(top: 40),width: 120,decoration: BoxDecoration(
-              color: context.watch<HomeViewModel>().selectedPopularIndex==selectedIndex?AppColor.blackLight.withOpacity(0.6):AppColor.white,
+              color: context.watch<HomeViewModel>().selectedPopularIndex==selectedIndex?AppColor.darkError:AppColor.blackLight.withOpacity(0.2),
               borderRadius: BorderRadius.circular(10),
             ),child: Column(
               children: [
@@ -49,7 +52,7 @@ class PopularCakeItemWidget extends StatelessWidget {
                         children: [
                           Text(product.name,maxLines: 2,style: const TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.w600),),
                           Flexible(
-                            child: Text("Desc: ${product.description}",style: TextStyle(color: Colors.black38,fontSize: 10,fontWeight: FontWeight.w400),),
+                            child: Text(product.description,maxLines: 5,overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.black38,fontSize: 10,fontWeight: FontWeight.w400),),
                           ),
                         ],
                       ),),
@@ -57,7 +60,7 @@ class PopularCakeItemWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text("\$ ${product.price}",style: TextStyle(color: Colors.black,fontSize: 10,fontWeight: FontWeight.w700),),
+                          Text("\u{20B9} ${product.price}",style: const TextStyle(color: Colors.black,fontSize: 10,fontWeight: FontWeight.w700),),
 
                         ],
                       ),
@@ -67,14 +70,21 @@ class PopularCakeItemWidget extends StatelessWidget {
               ],
             ),),
           ),
-          Positioned(top: 0,left: 0,right: 0,child: Image(image: AssetImage(AppAssets.appLogo),height: 80,width: 110,),),
-          Positioned(bottom: 0,right: 0,child:ClipRRect(
-    borderRadius: BorderRadius.only(bottomRight: Radius.circular(10),),
-            child: Container(decoration: BoxDecoration(
-                color: Colors.red.shade300,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(5),)
-            ),child: Icon(Icons.add,size: 20,)),
-          ),)
+          Positioned(top: 0,left: 0,right: 0,child: CachedNetworkImage(imageUrl: product.image.toString(),height: 80,width: 110,errorWidget: (context, url, error) => Image(image: AssetImage(AppAssets.appLogo),fit: BoxFit.cover,),),),
+          // Consumer<CartViewModel>(builder: (context, cartProvider, child) =>  Positioned(bottom: 0,right: 0,child:ClipRRect(
+          //   borderRadius: const BorderRadius.only(bottomRight: Radius.circular(10),),
+          //   child: InkWell(
+          //     onTap: ()async{
+          //       var cartItem=CartModel(productId: product.id, name: product.name, image: product.image, price: product.price, quantity: 1);
+          //       await cartProvider.addToCart(cartProvider.user!.uid.toString(), cartItem);
+          //      if(context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${product.name} added to cart')));
+          //     },
+          //     child: Container(decoration: BoxDecoration(
+          //         color: Colors.red.shade300,
+          //         borderRadius: BorderRadius.only(topLeft: Radius.circular(5),)
+          //     ),child: Icon(Icons.add,size: 20,)),
+          //   ),
+          // ),),),
         ],
       ),
     );

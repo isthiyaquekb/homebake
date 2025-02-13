@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/app_routes.dart';
 import 'package:home_bake/features/auth/view_model/auth_view_model.dart';
+import 'package:home_bake/utils/snackbars.dart';
 import 'package:home_bake/widgets/app_button.dart';
 import 'package:provider/provider.dart';
 
@@ -88,9 +89,13 @@ class LoginScreen extends StatelessWidget {
                       validator: (value) => authViewModel.passwordValidator(value.toString().trim()),
                     ),
                     const Spacer(flex: 1,),
-                    const Align(
+                     Align(
                         alignment: Alignment.centerRight,
-                        child: Text("Forgot password")),
+                        child: InkWell(
+                            onTap: (){
+                              Navigator.pushNamed(context, AppRoutes.forgotPassword);
+                            },
+                            child:const Text("Forgot password"))),
                     const Spacer(flex: 3,),
                     authViewModel.isLoading
                         ? const CircularProgressIndicator()
@@ -104,10 +109,11 @@ class LoginScreen extends StatelessWidget {
                         authViewModel.setIsLoading(false);
 
                         if (success) {
-                          Navigator.pushReplacementNamed(context, AppRoutes.home);
+                          successSnackBar(context,"Welcome, you are free to explore");
+                          Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
+
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Login Failed")));
+                          failureSnackBar(context,"Login failed, please check your credential");
                         }
                       },),
                     const Spacer(flex: 3,),

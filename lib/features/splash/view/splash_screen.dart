@@ -26,9 +26,6 @@ class SplashScreen extends StatelessWidget {
                 ,image: const AssetImage(AppAssets.appLogo),fit: BoxFit.contain,),
             ),
           ),),
-          const Center(
-            child: Text("Copyright@2025"),
-          ),
           const SizedBox(height: 40,),
         ],
       ),
