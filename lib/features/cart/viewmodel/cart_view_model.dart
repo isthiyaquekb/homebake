@@ -12,17 +12,20 @@ class CartViewModel extends ChangeNotifier{
   List<CartModel> _cartItems = [];
   int _cartCount = 0;
   double _totalAmount = 0;
+  String _uid = "";
 
   List<CartModel> get cartItemsList => _cartItems;
   int get cartCount => _cartCount;
   double get totalAmount => _totalAmount;
+  String get uid => _uid;
 
   User? _user;
 
   User? get user => _user;
 
   void init() async{
-    var uid=await fetchUserId();
+   _uid=await fetchUserId();
+    notifyListeners();
     log("USER ID cart: $uid");
     fetchCart(uid).listen((cartItems) {
       if (_cartCount != cartItems.length) {
@@ -32,20 +35,24 @@ class CartViewModel extends ChangeNotifier{
   }
   Future<String> fetchUserId() async {
     _user = _firebaseServices.auth.currentUser;
-    notifyListeners();
     return _user!.uid;
   }
 
   /// Stream to listen for cart updates in real-time
   Stream<List<CartModel>> fetchCart(String userId) {
+   try {
     return _firebaseServices.fireStore
         .collection('carts')
         .doc(userId)
         .collection('items')
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList();
-    });
+          return snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList();
+        });
+  } catch (e) {
+    print('Error fetching cart stream: $e');
+    return Stream.value([]);  // Return an empty stream on error
+  }
 
   }
 

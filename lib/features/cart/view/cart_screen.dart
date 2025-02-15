@@ -35,7 +35,7 @@ class CartScreen extends StatelessWidget {
                 child: Consumer<CartViewModel>(
                     builder: (context, cartProvider, child) =>
                         StreamBuilder<List<CartModel>>(
-                          stream:cartProvider.fetchCart(cartProvider.user!.uid),
+                          stream:cartProvider.fetchCart(cartProvider.uid),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
