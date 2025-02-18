@@ -6,6 +6,7 @@ import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/app_colors.dart';
 import 'package:home_bake/features/auth/model/user_model.dart';
 import 'package:home_bake/features/profile/viewmodel/profile_viewmodel.dart';
+import 'package:home_bake/utils/date_formatter.dart';
 import 'package:home_bake/widgets/app_text_form_field.dart';
 import 'package:home_bake/widgets/common_app_bar.dart';
 import 'package:provider/provider.dart';
@@ -35,18 +36,18 @@ class ProfileScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Consumer<ProfileViewmodel>(builder: (context, provider, child) {
-            if (provider.userId == null || provider.userId!.isEmpty) {
+            if (provider.userId.isEmpty) {
               return const Center(child: Text("User ID is missing"));
             }
 
             return StreamBuilder(stream: provider.getUserDetail(provider.userId),builder: (context, snapshot) {
 
-              /*if (snapshot.connectionState == ConnectionState.waiting) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
               if (!snapshot.hasData) {
                 return const Center(child: Text("No Profile Data Found"));
-              }*/
+              }
               UserModel user = snapshot.data!;
               provider.setProfileData(user);
               return Column(
@@ -165,22 +166,24 @@ class ProfileScreen extends StatelessWidget {
                               onTap: ()async{
                                 log("SHOW CALENDER");
                                 provider.isEnabled?provider.dobPicker(context):null;
-                                await provider.dobPicker(context);
                               },
-                              child: AppTextFormWidget(
-                                hint: "Date of birth",
-                                label: "DOB",
-                                inputType: TextInputType.text,
-                                isEnabled: false,
-                                maxLines: 1,
-                                validator: (p0) {
-
-                                },
-                                textController: provider.dobController,
-                                icon: AppAssets.calender,
-                                onChange: (p0) {
-
-                                },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                child: Container(height: 46,width: MediaQuery.sizeOf(context).width,decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(color:  AppColor.whiteLight)
+                                ),child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Row(
+                                    children: [
+                                      SvgPicture.asset(AppAssets.calender,height: 24,width: 24,colorFilter: ColorFilter.mode(provider.isEnabled?Colors.green:Colors.red, BlendMode.srcIn),),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 16.0),
+                                        child: Text(DateFormatter.formatDDYYMM(provider.birthdate),style: Theme.of(context).textTheme.bodyMedium,),
+                                      )
+                                    ],
+                                  ),
+                                ),),
                               ),
                             ),
 

@@ -73,9 +73,14 @@ class ProfileViewmodel extends ChangeNotifier{
     notifyListeners();
   }
   void onInit() async {
-    _userId=storageBox.read(AppKeys.keyUserId);
+    _userId=await fetchUserId();
     notifyListeners();
   }
+  Future<String> fetchUserId() async {
+    _user = _firebaseServices.auth.currentUser;
+    return _user!.uid;
+  }
+
   Stream<UserModel?> getUserDetail(String userId) {
     return _firebaseServices.fireStore
         .collection('Users')
@@ -98,8 +103,10 @@ class ProfileViewmodel extends ChangeNotifier{
     _phoneController.text=user.phone;
     _addressController.text=user.address;
     _createdDate=user.createdAt;
-    birthdate = user.dob == "" ? date ?? DateTime(DateTime.now().year - 16,DateTime.now().month, DateTime.now().day) : user.dob;
-    log("BIRTHDATE:$birthdate");
+   /* if(!isEnabled){
+      birthdate = user.dob == "" ? date ?? DateTime(DateTime.now().year - 16,DateTime.now().month, DateTime.now().day) : DateTime.parse(user.dob);
+      log("BIRTHDATE:$birthdate");
+    }*/
     if(!isEnabled){
       for (var element in genderList) {
         if(user.gender==element.name){
@@ -116,7 +123,7 @@ class ProfileViewmodel extends ChangeNotifier{
       initialDate: birthdate,
       keyboardType: TextInputType.datetime,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
-      lastDate: DateTime.now(),
+      lastDate: _calculateLastAllowedDate(),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -134,9 +141,28 @@ class ProfileViewmodel extends ChangeNotifier{
       },
     );
     birthdate=date!;
-    _dobController.text=DateFormatter.formatDDYYMM(date!);
+    log("PICKED DATE:$date");
+    _dobController.text=DateFormatter.formatDDYYMM(date);
     notifyListeners();
     return date;
+  }
+
+  //CALCULATE DATE FOR AGE RESTRICTION
+  DateTime _calculateLastAllowedDate() {
+    DateTime today = DateTime.now();
+    DateTime lastAllowedDate = DateTime(today.year - 16, today.month, today.day);
+    // Handle leap year correction
+    if (lastAllowedDate.isAfter(today)) {
+      lastAllowedDate = DateTime(today.year - 16, today.month, today.day - 1);
+    }
+    return lastAllowedDate;
+  }
+
+  emailValidator(value, context) {
+    if (value.isNotEmpty && RegExp(r"^[a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
+      return null;
+    }
+    return "Invalid mail";
   }
   void enableEdit(bool isEnabled) {
     _isEnabled=isEnabled;
@@ -158,7 +184,7 @@ class ProfileViewmodel extends ChangeNotifier{
 
   void updateSession() {
     if(formKey.currentState!.validate()){
-      var userData=UserModel(userId: userId,role: 'user', firstname: firstController.text, lastname: lastController.text, email: emailController.text, phone: phoneController.text, address: addressController.text, gender: genderList[selectedGenderIndex].name, dob: birthdate, createdAt: createdDate,modifiedAt: Timestamp.now(),);
+      var userData=UserModel(userId: userId,role: 'user', firstname: firstController.text, lastname: lastController.text, email: emailController.text, phone: phoneController.text, address: addressController.text, gender: genderList[selectedGenderIndex].name, dob: birthdate.toString(), createdAt: createdDate,modifiedAt: Timestamp.now(),);
       updateUserProfile(userId, userData);
     }
   }

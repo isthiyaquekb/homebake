@@ -27,7 +27,11 @@ void main() async{
     ChangeNotifierProvider(create: (_) => DetailViewModel()),
     ChangeNotifierProvider(create: (_) => CartViewModel()),
     ChangeNotifierProvider(create: (_) => OrderViewModel()),
-    ChangeNotifierProvider(create: (_) => ProfileViewmodel()),
+    ChangeNotifierProvider(create: (_) {
+      final viewModel = ProfileViewmodel();
+      viewModel.onInit(); // Initialize immediately
+      return viewModel;
+  }),
   ],child: const MyApp()));
 }
 

@@ -6,12 +6,12 @@ class DateFormatter{
 
   static String formatDateTime(DateTime dateTime) {
     final DateFormat formatter = DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'");
-    return formatter.format(dateTime.toUtc());
+    return formatter.format(dateTime.toLocal());
   }
 
   static String formatDDYYMM(DateTime dateTime) {
     final DateFormat formatter = DateFormat("dd-MM-yyyy");
-    return formatter.format(dateTime.toUtc());
+    return formatter.format(dateTime.toLocal());
   }
 
   static String formatDDMMYYYYHHmm(String isoDate){

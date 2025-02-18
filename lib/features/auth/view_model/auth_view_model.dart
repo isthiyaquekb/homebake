@@ -171,7 +171,7 @@ class AuthViewmodel extends ChangeNotifier {
           gender: gender,
           phone: phone,
           address: address,
-          dob: DateTime.parse(dob),
+          dob: dob,
           createdAt: Timestamp.now(),
           modifiedAt: Timestamp.now(),
         );

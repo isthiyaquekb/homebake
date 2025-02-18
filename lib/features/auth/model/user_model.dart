@@ -9,7 +9,7 @@ class UserModel {
   final String phone;
   final String address;
   final String gender;
-  final DateTime dob;
+  final String dob;
   final Timestamp createdAt;
   final Timestamp modifiedAt;
 
