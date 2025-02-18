@@ -154,6 +154,18 @@ class ProfileScreen extends StatelessWidget {
 
                               },
                             ),
+                            Flexible(child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                              SvgPicture.asset(AppAssets.male),
+                              Text("GENDER"),
+                              // ToggleButtons(children: [
+
+                              // ], isSelected: false),
+                              SvgPicture.asset(AppAssets.female),
+                            ],)
+                          )
                           ],
                         ),
                       ),

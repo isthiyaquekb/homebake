@@ -10,6 +10,7 @@ import 'package:home_bake/features/home/model/product_model.dart';
 import 'package:home_bake/features/home/view/home_screen.dart';
 import 'package:home_bake/features/auth/view/login_screen.dart';
 import 'package:home_bake/features/onboarding/view/onboarding_screen.dart';
+import 'package:home_bake/features/profile/view/profile_screen.dart';
 import 'package:home_bake/features/seeall/view/see_all_screen.dart';
 import 'package:home_bake/features/splash/view/splash_screen.dart';
 import 'package:home_bake/widgets/order_complete_widget.dart';
@@ -29,6 +30,7 @@ abstract class AppRoutes {
   static const cart = '/cart';
   static const success = '/success';
   static const failure = '/failure';
+  static const profile = '/profile';
 
 
   static Route<dynamic> generatedRoutes(RouteSettings routeSettings) {
@@ -71,6 +73,9 @@ abstract class AppRoutes {
 
       case cart:
         return MaterialPageRoute(builder: (context) => CartScreen());
+         case profile:
+        return MaterialPageRoute(builder: (context) => ProfileScreen());
+
       default:
         throw const FormatException("Route not found!, check routes again");
     }
