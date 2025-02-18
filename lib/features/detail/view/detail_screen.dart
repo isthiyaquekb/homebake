@@ -1,16 +1,12 @@
-import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/app_colors.dart';
 import 'package:home_bake/features/cart/model/cart_model.dart';
 import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
 import 'package:home_bake/features/detail/view_model/detail_view_model.dart';
-import 'package:home_bake/features/home/model/product_model.dart';
-import 'package:home_bake/utils/convex_quadrilateral_painter.dart';
 import 'package:home_bake/widgets/build_curved_button.dart';
 import 'package:home_bake/widgets/glass_morphic_container.dart';
 import 'package:provider/provider.dart';

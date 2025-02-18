@@ -54,7 +54,7 @@ class PopularCakeItemWidget extends StatelessWidget {
                         children: [
                           Text(product.name,maxLines: 2,style: const TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.w600),),
                           Flexible(
-                            child: Text(product.description,maxLines: 5,overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.black38,fontSize: 10,fontWeight: FontWeight.w400),),
+                            child: Text(product.description,maxLines: 5,overflow: TextOverflow.ellipsis,style: const TextStyle(color: Colors.black38,fontSize: 10,fontWeight: FontWeight.w400),),
                           ),
                         ],
                       ),),
@@ -72,7 +72,7 @@ class PopularCakeItemWidget extends StatelessWidget {
               ],
             ),),
           ),
-          Positioned(top: 0,left: 0,right: 0,child: CachedNetworkImage(imageUrl: product.image.toString(),height: 80,width: 110,errorWidget: (context, url, error) => Image(image: AssetImage(AppAssets.appLogo),fit: BoxFit.cover,),),),
+          Positioned(top: 0,left: 0,right: 0,child: CachedNetworkImage(imageUrl: product.image.toString(),height: 80,width: 110,errorWidget: (context, url, error) => const Image(image: AssetImage(AppAssets.appLogo),fit: BoxFit.cover,),),),
           // Consumer<CartViewModel>(builder: (context, cartProvider, child) =>  Positioned(bottom: 0,right: 0,child:ClipRRect(
           //   borderRadius: const BorderRadius.only(bottomRight: Radius.circular(10),),
           //   child: InkWell(

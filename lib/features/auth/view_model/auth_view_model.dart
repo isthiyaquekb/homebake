@@ -62,7 +62,7 @@ class AuthViewmodel extends ChangeNotifier {
       );
       _user = userCredential.user;
       storageBox.write(AppKeys.keyIsLoggedIn, true);
-      storageBox.write(AppKeys.keyUserId, _user?.uid);
+      storageBox.write(AppKeys.keyUserId, user?.uid);
       notifyListeners();
       return true;
     } catch (e) {
@@ -273,7 +273,7 @@ class AuthViewmodel extends ChangeNotifier {
       successSnackBar(context, 'Password reset email sent to $email');
     } catch (e) {
       print("Error sending password reset email: $e");
-      throw e;
+      rethrow;
     }
   }
 }

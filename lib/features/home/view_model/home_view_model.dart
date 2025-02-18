@@ -153,7 +153,7 @@ class HomeViewModel extends ChangeNotifier{
   }
 
   void search(String searchQuery) async {
-    log("SEARCH PRODUCTS QUERY: ${searchQuery}");
+    log("SEARCH PRODUCTS QUERY: $searchQuery");
     if (searchQuery.isEmpty) {
       _filteredProducts.clear();
       _productList; // Reset to all products

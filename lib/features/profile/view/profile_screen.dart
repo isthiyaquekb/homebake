@@ -94,11 +94,15 @@ class ProfileScreen extends StatelessWidget {
                               isEnabled: provider.isEnabled,
                               maxLines: 1,
                               validator: (p0) {
+                                return null;
+                              
 
                               },
                               textController: provider.firstController,
                               icon: AppAssets.userProfile,
                               onChange: (p0) {
+                                return null;
+                              
 
                               },
                             ),
@@ -109,11 +113,15 @@ class ProfileScreen extends StatelessWidget {
                               isEnabled: provider.isEnabled,
                               maxLines: 1,
                               validator: (p0) {
+                                return null;
+                              
 
                               },
                               textController: provider.lastController,
                               icon: AppAssets.userProfile,
                               onChange: (p0) {
+                                return null;
+                              
 
                               },
                             ),
@@ -124,11 +132,15 @@ class ProfileScreen extends StatelessWidget {
                               isEnabled: provider.isEnabled,
                               maxLines: 1,
                               validator: (p0) {
+                                return null;
+                              
 
                               },
                               textController: provider.emailController,
                               icon: AppAssets.email,
                               onChange: (p0) {
+                                return null;
+                              
 
                               },
                             ),
@@ -139,11 +151,15 @@ class ProfileScreen extends StatelessWidget {
                               isEnabled: provider.isEnabled,
                               maxLines: 1,
                               validator: (p0) {
+                                return null;
+                              
 
                               },
                               textController: provider.phoneController,
                               icon: AppAssets.phone,
                               onChange: (p0) {
+                                return null;
+                              
 
                               },
                             ),
@@ -154,11 +170,15 @@ class ProfileScreen extends StatelessWidget {
                               isEnabled: provider.isEnabled,
                               maxLines: 1,
                               validator: (p0) {
+                                return null;
+                              
 
                               },
                               textController: provider.addressController,
                               icon: AppAssets.address,
                               onChange: (p0) {
+                                return null;
+                              
 
                               },
                             ),

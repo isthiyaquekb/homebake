@@ -36,6 +36,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                 if(validate.toString().trim().isEmpty){
                   return 'Please enter an email id';
                 }
+                return null;
               },),
               const SizedBox(height: 20),
               Center(child: ElevatedButton(
@@ -44,7 +45,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                    provider.sendPasswordResetEmail(context,provider.emailController.text);
                  }
                 },
-                child: Text("Reset Password",),
+                child: const Text("Reset Password",),
               ),)
             ],
           ),

@@ -41,7 +41,7 @@ class ProfileViewmodel extends ChangeNotifier{
   TextEditingController get addressController => _addressController;
   TextEditingController get dobController => _dobController;
 
-  bool _isLoading = false;
+  final bool _isLoading = false;
   bool get isLoading => _isLoading;
 
   bool _isEnabled = false;
@@ -58,7 +58,7 @@ class ProfileViewmodel extends ChangeNotifier{
 
   bool _isFemale = false;
   bool get isFemale => _isFemale;
-  List<GenderModel> _genderList = [
+  final List<GenderModel> _genderList = [
     GenderModel(name: "Male", icon: AppAssets.male),
     GenderModel(name: "Female", icon: AppAssets.female),
   ];

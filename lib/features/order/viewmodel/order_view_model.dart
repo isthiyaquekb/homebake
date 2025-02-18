@@ -73,7 +73,7 @@ class OrderViewModel extends ChangeNotifier{
     }
   }
   Future<String> createOrder(String userId,List<Map<String, dynamic>> cartItems, double totalAmount) async {
-    log("CART ITEM MAP: ${cartItems}");
+    log("CART ITEM MAP: $cartItems");
     int orderNo = await generateUniqueOrderNo();
     try {
       // Generate a unique order ID

@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/app_colors.dart';
 import 'package:home_bake/core/app_routes.dart';
 import 'package:home_bake/features/order/model/order_model.dart';

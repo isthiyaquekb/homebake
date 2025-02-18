@@ -144,7 +144,7 @@ class CartScreen extends StatelessWidget {
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           20)),
-                                              child: CachedNetworkImage(imageUrl: cartItems[index].image.toString(),height: 80,width: 110,errorWidget: (context, url, error) => Image(image: AssetImage(AppAssets.appLogo),fit: BoxFit.cover,),)),
+                                              child: CachedNetworkImage(imageUrl: cartItems[index].image.toString(),height: 80,width: 110,errorWidget: (context, url, error) => const Image(image: AssetImage(AppAssets.appLogo),fit: BoxFit.cover,),)),
                                           Expanded(
                                             flex: 1,
                                             child: Padding(

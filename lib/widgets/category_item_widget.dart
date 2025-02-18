@@ -41,7 +41,7 @@ class CategoryItemWidget extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: ClipRRect(borderRadius: BorderRadius.circular(60),child: CachedNetworkImage(imageUrl: categoryData.image,fit: BoxFit.cover,errorWidget: (context, url, error) => Image(image: AssetImage(AppAssets.imageNotFound),fit: BoxFit.cover),),),
+                  child: ClipRRect(borderRadius: BorderRadius.circular(60),child: CachedNetworkImage(imageUrl: categoryData.image,fit: BoxFit.cover,errorWidget: (context, url, error) => const Image(image: AssetImage(AppAssets.imageNotFound),fit: BoxFit.cover),),),
                 ),
               ),
               const SizedBox(height: 10,),

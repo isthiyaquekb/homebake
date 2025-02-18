@@ -60,7 +60,7 @@ class CartViewModel extends ChangeNotifier{
     _totalAmount=0;
     _cartItems=cartList;
     _cartCount=count;
-    log("SET CART COUNT:${cartCount}");
+    log("SET CART COUNT:$cartCount");
    for (var element in cartList) {
      _totalAmount+=(element.quantity*element.price);
    }
