@@ -18,7 +18,7 @@ class OrderScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final orderViewModel =
           Provider.of<OrderViewModel>(context, listen: false);
-      orderViewModel.getOrdersStream();
+      orderViewModel.onInit();
     });
     return Scaffold(
       backgroundColor: AppColor.white,
@@ -27,7 +27,7 @@ class OrderScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Consumer<OrderViewModel>(
             builder: (context, provider, child) => StreamBuilder<List<OrderModel>>(
-              stream: provider.getOrdersStream(),
+              stream: provider.getOrdersStream(provider.userId),
               builder: (context, snapshot) {
               if (snapshot.connectionState ==
                   ConnectionState.waiting) {

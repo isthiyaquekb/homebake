@@ -74,6 +74,7 @@ class ProfileViewmodel extends ChangeNotifier{
   }
   void onInit() async {
     _userId=await fetchUserId();
+    birthdate=DateTime.now();
     notifyListeners();
   }
   Future<String> fetchUserId() async {
@@ -96,7 +97,7 @@ class ProfileViewmodel extends ChangeNotifier{
     });
   }
 
-  void setProfileData(UserModel user) {
+  Future<void> setProfileData(UserModel user)async {
     _emailController.text=user.email;
     _firstNameController.text=user.firstname;
     _lastNameController.text=user.lastname;

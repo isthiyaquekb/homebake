@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:home_bake/core/app_assets.dart';
@@ -19,9 +20,23 @@ class OrderViewModel extends ChangeNotifier{
   final FirebaseServices _firebaseServices = FirebaseServices();
   bool _isLoading = false;
   List<OrderModel> _orderList=[];
-
+  User? _user;
+  User? get user => _user;
   bool get isLoading => _isLoading;
   List<OrderModel> get orderList=> _orderList;
+
+  String _userId="";
+  String get userId => _userId;
+
+  void onInit() async {
+    _userId=await fetchUserId();
+    notifyListeners();
+  }
+  Future<String> fetchUserId() async {
+    _user = _firebaseServices.auth.currentUser;
+    return _user!.uid;
+  }
+
   void placeOrder(String userId, List<CartModel> cartItems) async {
     List<Map<String, dynamic>> cartItemsMap = cartItems.map((item) => item.toMap()).toList();
     double totalAmount = cartItems.fold(0, (sum, item) => sum + (item.price * item.quantity));
@@ -31,7 +46,7 @@ class OrderViewModel extends ChangeNotifier{
     if (orderId.isNotEmpty) {
       print("Order placed successfully with ID: $orderId");
       await CartViewModel().clearUserCart(userId);
-      getOrdersStream();
+      getOrdersStream(userId);
       // Redirect user to order confirmation screen
     } else {
       print("Failed to place order");
@@ -152,9 +167,10 @@ class OrderViewModel extends ChangeNotifier{
   // }
   //STREAM ORDER FROM FIREBASE
 
-  Stream<List<OrderModel>> getOrdersStream() {
+  Stream<List<OrderModel>> getOrdersStream(String userId) {
     return FirebaseFirestore.instance
         .collection('orders')
+        .where('userId', isEqualTo: userId) // Filter orders by userId
         .snapshots()
         .map((snapshot) {
       return snapshot.docs
@@ -173,7 +189,7 @@ class OrderViewModel extends ChangeNotifier{
         return Colors.red.shade200;
       case OrderStatus.readyForPickup:
         return Colors.indigo.shade200;
-      case OrderStatus.received:
+      case OrderStatus.completed:
         return Colors.green.shade200;
       default:
         return Colors.grey.shade200; // Fallback color
@@ -190,7 +206,7 @@ class OrderViewModel extends ChangeNotifier{
         return AppAssets.rejected;
       case OrderStatus.readyForPickup:
         return AppAssets.readyForPickup;
-      case OrderStatus.received:
+      case OrderStatus.completed:
         return AppAssets.orderReceived;
       default:
         return AppAssets.newOrder; // Fallback color
