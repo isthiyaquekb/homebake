@@ -9,7 +9,9 @@ class UserModel {
   final String phone;
   final String address;
   final String gender;
-  final String dob;
+  final DateTime dob;
+  final Timestamp createdAt;
+  final Timestamp modifiedAt;
 
   UserModel({
     this.userId,
@@ -20,7 +22,9 @@ class UserModel {
     required this.phone,
     required this.address,
     required this.gender,
-    required this.dob
+    required this.dob,
+    required this.createdAt,
+    required this.modifiedAt,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> json) {
@@ -34,6 +38,9 @@ class UserModel {
       address : json['address']??"NA",
       gender : json['gender']??"NA",
       dob : json['dob']??"NA",
+      createdAt: json["createdAt"] ?? Timestamp.now(),
+      modifiedAt: json["modifiedAt"] ?? Timestamp.now(),
+
     );
   }
 
@@ -47,6 +54,8 @@ class UserModel {
     "phone": phone,
     "address": address,
     "dob": dob,
+    "createdAt": createdAt,
+    "modifiedAt": modifiedAt,
   };
 
 

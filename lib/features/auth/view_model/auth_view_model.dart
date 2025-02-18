@@ -171,7 +171,9 @@ class AuthViewmodel extends ChangeNotifier {
           gender: gender,
           phone: phone,
           address: address,
-          dob: dob,
+          dob: DateTime.parse(dob),
+          createdAt: Timestamp.now(),
+          modifiedAt: Timestamp.now(),
         );
         if (context.mounted) createUser(context, userData);
         notifyListeners();

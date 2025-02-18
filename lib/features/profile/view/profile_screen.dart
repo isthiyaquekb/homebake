@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_bake/core/app_assets.dart';
+import 'package:home_bake/core/app_colors.dart';
 import 'package:home_bake/features/auth/model/user_model.dart';
 import 'package:home_bake/features/profile/viewmodel/profile_viewmodel.dart';
 import 'package:home_bake/widgets/app_text_form_field.dart';
@@ -38,12 +41,12 @@ class ProfileScreen extends StatelessWidget {
 
             return StreamBuilder(stream: provider.getUserDetail(provider.userId),builder: (context, snapshot) {
 
-              if (snapshot.connectionState == ConnectionState.waiting) {
+              /*if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
               if (!snapshot.hasData) {
                 return const Center(child: Text("No Profile Data Found"));
-              }
+              }*/
               UserModel user = snapshot.data!;
               provider.setProfileData(user);
               return Column(
@@ -66,6 +69,10 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  !provider.isEnabled?Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Center(child: SvgPicture.asset(provider.selectedGenderIndex==0?AppAssets.male:AppAssets.female,height: 24,width: 24,)),
+                  ):const SizedBox.shrink(),
                   Consumer<ProfileViewmodel>(builder: (context, provider, child) => Container(
                     width: double.maxFinite,decoration: BoxDecoration(
 
@@ -154,18 +161,49 @@ class ProfileScreen extends StatelessWidget {
 
                               },
                             ),
-                            Flexible(child: Row(
+                            InkWell(
+                              onTap: ()async{
+                                log("SHOW CALENDER");
+                                provider.isEnabled?provider.dobPicker(context):null;
+                                await provider.dobPicker(context);
+                              },
+                              child: AppTextFormWidget(
+                                hint: "Date of birth",
+                                label: "DOB",
+                                inputType: TextInputType.text,
+                                isEnabled: false,
+                                maxLines: 1,
+                                validator: (p0) {
+
+                                },
+                                textController: provider.dobController,
+                                icon: AppAssets.calender,
+                                onChange: (p0) {
+
+                                },
+                              ),
+                            ),
+
+                            provider.isEnabled?Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                              SvgPicture.asset(AppAssets.male),
-                              Text("GENDER"),
-                              // ToggleButtons(children: [
-
-                              // ], isSelected: false),
-                              SvgPicture.asset(AppAssets.female),
-                            ],)
-                          )
+                              children: provider.genderList.map((genderElement) => InkWell(
+                                onTap: (){
+                                  provider.setGenderIndex(provider.genderList.indexOf(genderElement));
+                                },
+                                child: Container(
+                                    height: 40,
+                                    width: MediaQuery.sizeOf(context).width*0.4,
+                                    decoration: BoxDecoration(
+                                        color: provider.genderList.indexOf(genderElement)==provider.selectedGenderIndex?AppColor.primaryColor.withOpacity(0.5):Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(color: AppColor.borderColor)
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(child: SvgPicture.asset(genderElement.icon,height: 24,width: 24,)),
+                                    )),
+                              ),).toList(),):const SizedBox.shrink()
                           ],
                         ),
                       ),
