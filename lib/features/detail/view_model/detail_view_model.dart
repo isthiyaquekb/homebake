@@ -11,6 +11,11 @@ class DetailViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
+  void resetCount(){
+    _count=1;
+    notifyListeners();
+  }
+
   void incrementCount(){
     _count++;
     notifyListeners();

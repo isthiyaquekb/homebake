@@ -32,6 +32,11 @@ void main() async{
       viewModel.onInit(); // Initialize immediately
       return viewModel;
   }),
+    // ChangeNotifierProvider(create: (_) {
+    //   final viewModel = OrderViewModel();
+    //   viewModel.onInit(); // Initialize immediately
+    //   return viewModel;
+    // }),
   ],child: const MyApp()));
 }
 

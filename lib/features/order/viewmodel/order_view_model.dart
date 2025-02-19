@@ -98,10 +98,9 @@ class OrderViewModel extends ChangeNotifier{
       log("Order created successfully: ${order.orderId}");
 
       // Generate QR code
-      String qrCodeUrl = await _generateAndUploadQRCode(order.orderId);
+      await generateAndStoreQRData(order.orderNo.toString(),order.orderId);
 
-      // Update order with QR code URL
-      await orderRef.update({"qrCodeUrl": qrCodeUrl});
+
       return order.orderId;
     } catch (e) {
       log("Error creating order: $e");
@@ -110,67 +109,25 @@ class OrderViewModel extends ChangeNotifier{
   }
 
   /// Generate QR Code and Upload to Firebase Storage
-  Future<String> _generateAndUploadQRCode(String orderId) async {
-    try {
-      // Generate QR code image
-      final qrValidationResult = QrValidator.validate(
-        data: orderId,
-        version: QrVersions.auto,
-        errorCorrectionLevel: QrErrorCorrectLevel.L,
-      );
 
-      if (qrValidationResult.status == QrValidationStatus.error) {
-        throw Exception("QR Code generation failed");
-      }
+  Future<void> generateAndStoreQRData(String orderNo, String orderId) async {
+    String qrData = "$orderNo:${orderNo}_orderId:$orderId";
 
-      final qrCode = qrValidationResult.qrCode;
-      log("Generated QR: $qrCode");
-      final tempDir = await getTemporaryDirectory();
-      final filePath = '${tempDir.path}/$orderId.png';
+    await FirebaseFirestore.instance.collection('orders').doc(orderId).update({
+      'qrData': qrData, // Store as text
+    });
 
-      final painter = QrPainter(
-        data: orderId,
-        version: QrVersions.auto,
-        errorCorrectionLevel: QrErrorCorrectLevel.L,
-      );
-
-      final file = File(filePath);
-      final pic = await painter.toImageData(300);
-      await file.writeAsBytes(pic!.buffer.asUint8List());
-      //
-      // // Upload QR code image to Firebase Storage
-      // String storagePath = 'qr_codes/$orderId.png';
-      // TaskSnapshot uploadTask = await _storage.ref(storagePath).putFile(file);
-      // String qrUrl = await uploadTask.ref.getDownloadURL();
-
-      return file.path;
-    } catch (e) {
-      log("Error generating/uploading QR: $e");
-      return "";
-    }
+    print("QR Data stored successfully!");
   }
 
-  // ///FETCH ORDER FROM ORDER COLLECTIONS
-  // Future<void> getOrders() async {
-  //   _isLoading = true;
-  //   notifyListeners();
-  //
-  //   try {
-  //     QuerySnapshot querySnapshot = await _firebaseServices.fireStore.collection('orders').get();
-  //     _orderList = querySnapshot.docs.map((doc) => OrderModel.fromDocumentSnapshot(doc)).toList();
-  //     log("TOTAL AMOUNT:${orderList[0].totalAmount}");
-  //   } catch (e) {
-  //     debugPrint("Error fetching orders: $e");
-  //   }
-  //   _isLoading = false;
-  //   notifyListeners();
-  // }
+
   //STREAM ORDER FROM FIREBASE
 
   Stream<List<OrderModel>> getOrdersStream(String userId) {
     return FirebaseFirestore.instance
         .collection('orders')
-        .where('userId', isEqualTo: userId) // Filter orders by userId
+        .where('userId', isEqualTo: userId) // Fetch only this user's orders
+        .orderBy('createdAt', descending: true) // Sort latest orders first
         .snapshots()
         .map((snapshot) {
       return snapshot.docs
