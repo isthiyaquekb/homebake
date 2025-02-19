@@ -5,6 +5,7 @@ import 'package:home_bake/core/app_colors.dart';
 import 'package:home_bake/core/app_routes.dart';
 import 'package:home_bake/features/cart/model/cart_model.dart';
 import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
+import 'package:home_bake/features/detail/view_model/detail_view_model.dart';
 import 'package:home_bake/features/home/model/popular_cake_model.dart';
 import 'package:home_bake/features/home/model/product_model.dart';
 import 'package:home_bake/features/home/view_model/home_view_model.dart';
@@ -27,6 +28,7 @@ class PopularCakeItemWidget extends StatelessWidget {
         children: [
           InkWell(
             onTap: (){
+              context.read<DetailViewModel>().resetCount();
               Navigator.pushNamed(context, AppRoutes.details,arguments: product);
               context.read<HomeViewModel>().setPopular(selectedIndex);
             },

@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_bake/core/app_assets.dart';
+import 'package:home_bake/core/app_colors.dart';
 import 'package:home_bake/features/auth/model/user_model.dart';
 import 'package:home_bake/features/profile/viewmodel/profile_viewmodel.dart';
+import 'package:home_bake/utils/date_formatter.dart';
 import 'package:home_bake/widgets/app_text_form_field.dart';
 import 'package:home_bake/widgets/common_app_bar.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Consumer<ProfileViewmodel>(builder: (context, provider, child) {
-            if (provider.userId == null || provider.userId!.isEmpty) {
+            if (provider.userId.isEmpty) {
               return const Center(child: Text("User ID is missing"));
             }
 
@@ -66,6 +70,10 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  !provider.isEnabled?Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Center(child: SvgPicture.asset(provider.selectedGenderIndex==0?AppAssets.male:AppAssets.female,height: 24,width: 24,)),
+                  ):const SizedBox.shrink(),
                   Consumer<ProfileViewmodel>(builder: (context, provider, child) => Container(
                     width: double.maxFinite,decoration: BoxDecoration(
 
@@ -154,6 +162,51 @@ class ProfileScreen extends StatelessWidget {
 
                               },
                             ),
+                            InkWell(
+                              onTap: ()async{
+                                log("SHOW CALENDER");
+                                provider.isEnabled?provider.dobPicker(context):null;
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                child: Container(height: 46,width: MediaQuery.sizeOf(context).width,decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(color:  AppColor.whiteLight)
+                                ),child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Row(
+                                    children: [
+                                      SvgPicture.asset(AppAssets.calender,height: 24,width: 24,colorFilter: ColorFilter.mode(provider.isEnabled?Colors.green:Colors.red, BlendMode.srcIn),),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 16.0),
+                                        child: Text(DateFormatter.formatDDYYMM(provider.birthdate),style: Theme.of(context).textTheme.bodyMedium,),
+                                      )
+                                    ],
+                                  ),
+                                ),),
+                              ),
+                            ),
+
+                            provider.isEnabled?Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: provider.genderList.map((genderElement) => InkWell(
+                                onTap: (){
+                                  provider.setGenderIndex(provider.genderList.indexOf(genderElement));
+                                },
+                                child: Container(
+                                    height: 40,
+                                    width: MediaQuery.sizeOf(context).width*0.4,
+                                    decoration: BoxDecoration(
+                                        color: provider.genderList.indexOf(genderElement)==provider.selectedGenderIndex?AppColor.primaryColor.withOpacity(0.5):Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(color: AppColor.borderColor)
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(child: SvgPicture.asset(genderElement.icon,height: 24,width: 24,)),
+                                    )),
+                              ),).toList(),):const SizedBox.shrink()
                           ],
                         ),
                       ),

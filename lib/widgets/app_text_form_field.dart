@@ -41,15 +41,15 @@ class AppTextFormWidget extends StatelessWidget {
           hintText: hint,
           hintStyle: Theme.of(context).textTheme.bodyMedium,
           labelText: label,
-          labelStyle: Theme.of(context).textTheme.bodyMedium,
+          labelStyle: textController.text.isNotEmpty?Theme.of(context).textTheme.bodyMedium:Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColor.inActiveColor.withOpacity(0.5)),
           contentPadding: const EdgeInsets.symmetric(horizontal: 8,vertical: 0),
           disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5),
-              borderSide: const BorderSide(color: AppColor.whiteLight)
+              borderSide: BorderSide(color: textController.text.isNotEmpty?AppColor.whiteLight:AppColor.inActiveColor.withOpacity(0.5))
           ),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5),
-              borderSide: const BorderSide(color: AppColor.whiteLight)
+              borderSide: BorderSide(color: textController.text.isNotEmpty?AppColor.whiteLight:AppColor.inActiveColor.withOpacity(0.5))
           ),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5),

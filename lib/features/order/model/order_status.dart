@@ -4,7 +4,7 @@ enum OrderStatus {
   rejected,    // When rejected by admin
   readyForPickup, // When it's ready for pickup
   pickedUp,    // When picked up
-  received,    // When received by the customer
+  completed,    // When received by the customer
 
 }
 
@@ -21,8 +21,8 @@ extension OrderStatusExtension on OrderStatus {
         return "Ready for Pickup";
       case OrderStatus.pickedUp:
         return "Picked Up";
-      case OrderStatus.received:
-        return "Received";
+      case OrderStatus.completed:
+        return "completed";
     }
   }
 }

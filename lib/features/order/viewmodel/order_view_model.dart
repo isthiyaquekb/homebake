@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:home_bake/core/app_assets.dart';
@@ -19,9 +20,23 @@ class OrderViewModel extends ChangeNotifier{
   final FirebaseServices _firebaseServices = FirebaseServices();
   bool _isLoading = false;
   List<OrderModel> _orderList=[];
-
+  User? _user;
+  User? get user => _user;
   bool get isLoading => _isLoading;
   List<OrderModel> get orderList=> _orderList;
+
+  String _userId="";
+  String get userId => _userId;
+
+  void onInit() async {
+    _userId=await fetchUserId();
+    notifyListeners();
+  }
+  Future<String> fetchUserId() async {
+    _user = _firebaseServices.auth.currentUser;
+    return _user!.uid;
+  }
+
   void placeOrder(String userId, List<CartModel> cartItems) async {
     List<Map<String, dynamic>> cartItemsMap = cartItems.map((item) => item.toMap()).toList();
     double totalAmount = cartItems.fold(0, (sum, item) => sum + (item.price * item.quantity));
@@ -31,7 +46,7 @@ class OrderViewModel extends ChangeNotifier{
     if (orderId.isNotEmpty) {
       print("Order placed successfully with ID: $orderId");
       await CartViewModel().clearUserCart(userId);
-      getOrdersStream();
+      getOrdersStream(userId);
       // Redirect user to order confirmation screen
     } else {
       print("Failed to place order");
@@ -83,10 +98,9 @@ class OrderViewModel extends ChangeNotifier{
       log("Order created successfully: ${order.orderId}");
 
       // Generate QR code
-      String qrCodeUrl = await _generateAndUploadQRCode(order.orderId);
+      await generateAndStoreQRData(order.orderNo.toString(),order.orderId);
 
-      // Update order with QR code URL
-      await orderRef.update({"qrCodeUrl": qrCodeUrl});
+
       return order.orderId;
     } catch (e) {
       log("Error creating order: $e");
@@ -95,66 +109,25 @@ class OrderViewModel extends ChangeNotifier{
   }
 
   /// Generate QR Code and Upload to Firebase Storage
-  Future<String> _generateAndUploadQRCode(String orderId) async {
-    try {
-      // Generate QR code image
-      final qrValidationResult = QrValidator.validate(
-        data: orderId,
-        version: QrVersions.auto,
-        errorCorrectionLevel: QrErrorCorrectLevel.L,
-      );
 
-      if (qrValidationResult.status == QrValidationStatus.error) {
-        throw Exception("QR Code generation failed");
-      }
+  Future<void> generateAndStoreQRData(String orderNo, String orderId) async {
+    String qrData = "$orderNo:${orderNo}_orderId:$orderId";
 
-      final qrCode = qrValidationResult.qrCode;
-      log("Generated QR: $qrCode");
-      final tempDir = await getTemporaryDirectory();
-      final filePath = '${tempDir.path}/$orderId.png';
+    await FirebaseFirestore.instance.collection('orders').doc(orderId).update({
+      'qrData': qrData, // Store as text
+    });
 
-      final painter = QrPainter(
-        data: orderId,
-        version: QrVersions.auto,
-        errorCorrectionLevel: QrErrorCorrectLevel.L,
-      );
-
-      final file = File(filePath);
-      final pic = await painter.toImageData(300);
-      await file.writeAsBytes(pic!.buffer.asUint8List());
-      //
-      // // Upload QR code image to Firebase Storage
-      // String storagePath = 'qr_codes/$orderId.png';
-      // TaskSnapshot uploadTask = await _storage.ref(storagePath).putFile(file);
-      // String qrUrl = await uploadTask.ref.getDownloadURL();
-
-      return file.path;
-    } catch (e) {
-      log("Error generating/uploading QR: $e");
-      return "";
-    }
+    print("QR Data stored successfully!");
   }
 
-  // ///FETCH ORDER FROM ORDER COLLECTIONS
-  // Future<void> getOrders() async {
-  //   _isLoading = true;
-  //   notifyListeners();
-  //
-  //   try {
-  //     QuerySnapshot querySnapshot = await _firebaseServices.fireStore.collection('orders').get();
-  //     _orderList = querySnapshot.docs.map((doc) => OrderModel.fromDocumentSnapshot(doc)).toList();
-  //     log("TOTAL AMOUNT:${orderList[0].totalAmount}");
-  //   } catch (e) {
-  //     debugPrint("Error fetching orders: $e");
-  //   }
-  //   _isLoading = false;
-  //   notifyListeners();
-  // }
+
   //STREAM ORDER FROM FIREBASE
 
-  Stream<List<OrderModel>> getOrdersStream() {
+  Stream<List<OrderModel>> getOrdersStream(String userId) {
     return FirebaseFirestore.instance
         .collection('orders')
+        .where('userId', isEqualTo: userId) // Fetch only this user's orders
+        .orderBy('createdAt', descending: true) // Sort latest orders first
         .snapshots()
         .map((snapshot) {
       return snapshot.docs
@@ -173,7 +146,7 @@ class OrderViewModel extends ChangeNotifier{
         return Colors.red.shade200;
       case OrderStatus.readyForPickup:
         return Colors.indigo.shade200;
-      case OrderStatus.received:
+      case OrderStatus.completed:
         return Colors.green.shade200;
       default:
         return Colors.grey.shade200; // Fallback color
@@ -190,7 +163,7 @@ class OrderViewModel extends ChangeNotifier{
         return AppAssets.rejected;
       case OrderStatus.readyForPickup:
         return AppAssets.readyForPickup;
-      case OrderStatus.received:
+      case OrderStatus.completed:
         return AppAssets.orderReceived;
       default:
         return AppAssets.newOrder; // Fallback color

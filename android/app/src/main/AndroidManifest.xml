@@ -18,7 +18,7 @@
 
 
     <application
-        android:label="home_bake"
+        android:label="Home Bake"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
