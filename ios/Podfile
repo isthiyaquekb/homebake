@@ -30,12 +30,14 @@ target 'Runner' do
   use_frameworks! :linkage => :dynamic
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-# Ensure modular headers for Firebase
+
+  # Ensure modular headers for Firebase
   pod 'Firebase/Core', :modular_headers => true
   pod 'Firebase/Auth', :modular_headers => true
   pod 'Firebase/Firestore', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
   pod 'FirebaseCoreInternal', :modular_headers => true
+
   target 'RunnerTests' do
     inherit! :search_paths
   end
@@ -44,6 +46,18 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+
+    # Fix: Add GCC_PREPROCESSOR_DEFINITIONS outside the BoringSSL-GRPC check
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+        'PERMISSION_LOCATION=1',
+        'PERMISSION_CAMERA=1',
+        'PERMISSION_PHOTO=1',
+      ]
+    end
+
+    # Fix: Only modify BoringSSL-GRPC's compiler flags if it exists
     if target.name == 'BoringSSL-GRPC'
       target.source_build_phase.files.each do |file|
         if file.settings && file.settings['COMPILER_FLAGS']

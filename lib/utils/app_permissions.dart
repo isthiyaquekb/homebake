@@ -10,7 +10,15 @@ class AppPermissions {
   /// Request a specific permission
   Future<bool> requestPermission(Permission permission) async {
     final status = await permission.request();
-    return status.isGranted;
+     if (status.isGranted) {
+      return true;
+    } else if (status.isPermanentlyDenied) {
+      // Open app settings if permission is permanently denied
+      await openSettings();
+      return false;
+    }
+
+    return false;
   }
 
   /// Check if a specific permission is granted
@@ -18,8 +26,11 @@ class AppPermissions {
     return await permission.status.isGranted;
   }
 
-  /// Open app settings
-  Future<void> openAppSettings() async {
-    await openAppSettings();
+   /// Open app settings
+  Future<void> openSettings() async {
+    bool isOpened = await openAppSettings();
+    if (!isOpened) {
+      throw Exception("Could not open app settings.");
+    }
   }
 }

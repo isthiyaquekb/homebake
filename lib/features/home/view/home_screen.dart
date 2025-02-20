@@ -29,17 +29,19 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       key: context.read<HomeViewModel>().globalKey,
       body: Consumer<HomeViewModel>(
-        builder: (context, value, child) => value.isLoading
+        builder: (context, value, child) => value.isLocating
             ? Center(
                 child: SizedBox(
-                  height: MediaQuery.sizeOf(context).height * 0.40,
-                  width: MediaQuery.sizeOf(context).width * 0.7,
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Lottie.asset(AppAssets.locationPinLottie),
-                      Text("Locating...",style: Theme.of(context)
-                          .textTheme
-                          .labelLarge,)
+                      Lottie.asset(AppAssets.locationPinLottie,height:MediaQuery.sizeOf(context).height * 0.50,),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: Text("Locating...",style: Theme.of(context)
+                            .textTheme
+                            .labelLarge,),
+                      )
                     ],
                   ),
                 ),
@@ -92,9 +94,10 @@ class HomeScreen extends StatelessWidget {
                               builder: (context, provider, child) => InkWell(
                                 onTap: () async {
                                   await provider.logout();
-                                  if (context.mounted)
+                                  if (context.mounted) {
                                     Navigator.pushNamedAndRemoveUntil(context,
                                         AppRoutes.login, (route) => false);
+                                  }
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(

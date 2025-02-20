@@ -64,11 +64,11 @@ class ProfileViewmodel extends ChangeNotifier{
   late DateTime birthdate;
   DateTime? date;
   // DateFormat? format;
-  var selectedGenderIndex=0;
+  int _selectedGenderIndex=0;
+  int get selectedGenderIndex => _selectedGenderIndex;
 
   void setGenderIndex(int index){
-    selectedGenderIndex=index;
-    notifyListeners();
+    _selectedGenderIndex=index;
   }
   void onInit() async {
     _userId=await fetchUserId();
@@ -106,7 +106,7 @@ class ProfileViewmodel extends ChangeNotifier{
       birthdate = user.dob == "" ? date ?? DateTime(DateTime.now().year - 16,DateTime.now().month, DateTime.now().day) : DateTime.parse(user.dob);
       log("BIRTHDATE:$birthdate");
     }*/
-    if(!isEnabled){
+    if(user.address!=""){
       for (var element in genderList) {
         if(user.gender==element.name){
           setGenderIndex(genderList.indexOf(element));

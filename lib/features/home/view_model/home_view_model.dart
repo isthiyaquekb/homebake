@@ -3,9 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:free_map/free_map.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/services/firebase_services.dart';
 import 'package:home_bake/features/home/model/category_model.dart';
 import 'package:home_bake/features/home/model/product_model.dart';
@@ -23,13 +21,14 @@ class HomeViewModel extends ChangeNotifier{
   List<CategoryModel> _categoryList=[];
   List<ProductModel> _productList=[];
   List<ProductModel> _filteredProducts = [];
-  List<String> _addressList = [];
+  final List<String> _addressList = [];
   bool _isLoading = false;
+  bool _isLocating = false;
   String _area = "";
   String _city = "";
   String _state = "";
   bool _isLocationGranted = false;
-  bool _isLocationDenied = false;
+  final bool _isLocationDenied = false;
   List<CategoryModel> get categoryList=> _categoryList;
   List<ProductModel> get productList=> _productList;
   List<ProductModel> get filteredProducts => _filteredProducts;
@@ -37,6 +36,7 @@ class HomeViewModel extends ChangeNotifier{
   GlobalKey<ScaffoldState> get globalKey=> _globalKey;
   bool get isLocationGranted => _isLocationGranted;
   bool get isLoading => _isLoading;
+  bool get isLocating => _isLocating;
   String get area => _area;
   String get city => _city;
   String get state => _state;
@@ -45,7 +45,7 @@ class HomeViewModel extends ChangeNotifier{
   void init() async {
    await getCategories();
    await getProducts();
-   setIsLoading(true);
+  _isLocating=true;
    if(!isLocationGranted){
      await AppPermissions.instance.requestPermission(Permission.location);
    }
@@ -67,7 +67,7 @@ class HomeViewModel extends ChangeNotifier{
     print(data?.address);
     List<String> splitList=[];
     splitList=data!.address.split(",");
-    log("SPLIT:${splitList}");
+    log("SPLIT:$splitList");
     // _addressList.add();
     String address =  correctAddress(splitList);
     _area=address.split(",")[0].toString();
@@ -75,7 +75,7 @@ class HomeViewModel extends ChangeNotifier{
     _state=address.split(",")[2].toString();
     print("FINAL ADDRESS:$address");
 
-    setIsLoading(false);
+    _isLocating=false;
     notifyListeners();
   }
 
