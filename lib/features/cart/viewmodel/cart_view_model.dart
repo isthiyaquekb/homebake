@@ -5,10 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:home_bake/core/services/firebase_services.dart';
 import 'package:home_bake/features/cart/model/cart_model.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 
 class CartViewModel extends ChangeNotifier{
 
   final FirebaseServices _firebaseServices = FirebaseServices();
+  final GlobalKey<SlideActionState> _slideKey = GlobalKey();
   List<CartModel> _cartItems = [];
   int _cartCount = 0;
   double _totalAmount = 0;
@@ -18,7 +20,7 @@ class CartViewModel extends ChangeNotifier{
   int get cartCount => _cartCount;
   double get totalAmount => _totalAmount;
   String get uid => _uid;
-
+  GlobalKey<SlideActionState> get slideKey=>_slideKey;
   User? _user;
 
   User? get user => _user;
@@ -60,7 +62,7 @@ class CartViewModel extends ChangeNotifier{
     _totalAmount=0;
     _cartItems=cartList;
     _cartCount=count;
-    log("SET CART COUNT:${cartCount}");
+    log("SET CART COUNT:$cartCount");
    for (var element in cartList) {
      _totalAmount+=(element.quantity*element.price);
    }

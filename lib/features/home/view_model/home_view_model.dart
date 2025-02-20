@@ -1,10 +1,11 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:free_map/free_map.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/services/firebase_services.dart';
 import 'package:home_bake/features/home/model/category_model.dart';
 import 'package:home_bake/features/home/model/product_model.dart';
@@ -22,16 +23,20 @@ class HomeViewModel extends ChangeNotifier{
   List<CategoryModel> _categoryList=[];
   List<ProductModel> _productList=[];
   List<ProductModel> _filteredProducts = [];
+  List<String> _addressList = [];
   bool _isLoading = false;
   String _area = "";
   String _city = "";
   String _state = "";
   bool _isLocationGranted = false;
+  bool _isLocationDenied = false;
   List<CategoryModel> get categoryList=> _categoryList;
   List<ProductModel> get productList=> _productList;
   List<ProductModel> get filteredProducts => _filteredProducts;
+  List<String> get addressList => _addressList;
   GlobalKey<ScaffoldState> get globalKey=> _globalKey;
   bool get isLocationGranted => _isLocationGranted;
+  bool get isLoading => _isLoading;
   String get area => _area;
   String get city => _city;
   String get state => _state;
@@ -40,46 +45,40 @@ class HomeViewModel extends ChangeNotifier{
   void init() async {
    await getCategories();
    await getProducts();
+   setIsLoading(true);
    if(!isLocationGranted){
      await AppPermissions.instance.requestPermission(Permission.location);
    }
    _isLocationGranted = await AppPermissions.instance.isPermissionGranted(Permission.location);
-   if(isLocationGranted){
-     final position=  await getCurrentLocation();
-     getLocationByPosition(position);
-
+   if(!await AppPermissions.instance.isPermissionGranted(Permission.location)){
+     await AppPermissions.instance.requestPermission(Permission.location);
    }
+   final position=  await getCurrentLocation();
+   log("POSITION:${position.latitude},${position.longitude}");
+   getAddress(LatLng(position.latitude, position.longitude));
    notifyListeners();
   }
 
+  Future<void> getAddress(LatLng pos) async {
+    final data = await FmService().getAddress(
+      lat: pos.latitude,
+      lng: pos.longitude,
+    );
+    print(data?.address);
+    List<String> splitList=[];
+    splitList=data!.address.split(",");
+    log("SPLIT:${splitList}");
+    // _addressList.add();
+    String address =  correctAddress(splitList);
+    _area=address.split(",")[0].toString();
+    _city=address.split(",")[1].toString();
+    _state=address.split(",")[2].toString();
+    print("FINAL ADDRESS:$address");
 
-  getLocationByPosition(Position position)async{
-    // log("LAT:${position.latitude},LON:${position.longitude}");
-    log("LAT:${8.2833322},LON:${73.0333332}");
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-    if (placemarks.isNotEmpty) {
-      var output = placemarks;
-      Placemark place = placemarks.first;
-
-      _area=placemarks[0].locality.toString();
-      _city=placemarks[0].subLocality.toString();
-      _state=placemarks[0].administrativeArea.toString();
-
-      log("""
-      Name: ${place.name}
-      Street: ${place.street}
-      ISO Country Code: ${place.isoCountryCode}
-      Country: ${place.country}
-      Postal Code: ${place.postalCode}
-      Administrative Area (State): ${place.administrativeArea}
-      Subadministrative Area: ${place.subAdministrativeArea}
-      Locality (City): ${place.locality}
-      Sublocality: ${place.subLocality}
-      Thoroughfare: ${place.thoroughfare}
-      Subthoroughfare: ${place.subThoroughfare}
-      """);
-    }
+    setIsLoading(false);
+    notifyListeners();
   }
+
   void setIsLoading(bool loading) {
     _isLoading = loading;
     notifyListeners();
@@ -153,7 +152,7 @@ class HomeViewModel extends ChangeNotifier{
   }
 
   void search(String searchQuery) async {
-    log("SEARCH PRODUCTS QUERY: ${searchQuery}");
+    log("SEARCH PRODUCTS QUERY: $searchQuery");
     if (searchQuery.isEmpty) {
       _filteredProducts.clear();
       _productList; // Reset to all products
@@ -186,6 +185,30 @@ class HomeViewModel extends ChangeNotifier{
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
+  }
+
+  String correctAddress(List<String> addressList) {
+    // Convert list to a Set to check for duplicates
+    Set<String> uniqueSet = addressList.toSet();
+    // Remove duplicates while preserving order
+    List<String> uniqueList = addressList.toSet().toList();
+
+    print("Unique List Before Removal: $uniqueList");
+
+    // Remove 2nd index (index 2) and second-last index (index length - 2) if possible
+    if (uniqueSet.length < addressList.length) {
+      // Duplicates exist, remove index 2 (third item)
+      if (uniqueList.length > 2) uniqueList.removeAt(2);
+      if (uniqueList.length > 2) uniqueList.removeAt(uniqueList.length - 2);
+    } else {
+      // No duplicates, remove index 1 (second item)
+      uniqueList.removeAt(uniqueList.length - 2);
+    }
+
+    print("Unique List After Removal: $uniqueList");
+
+    // Convert to a formatted address string
+    return uniqueList.join(", ");
   }
 
 }

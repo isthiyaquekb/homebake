@@ -99,5 +99,6 @@ class AppAssets {
   static const String failureLottie = "assets/lottie/failed.json";
   static const String emptyCartLottie = "assets/lottie/add_to_cart.json";
   static const String noOrdersLottie = "assets/lottie/no_order_available.json";
+  static const String locationPinLottie = "assets/lottie/pin_location.json";
 
 }

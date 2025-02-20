@@ -2,12 +2,10 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/app_colors.dart';
-import 'package:home_bake/core/app_keys.dart';
 import 'package:home_bake/core/services/firebase_services.dart';
 import 'package:home_bake/features/auth/model/user_model.dart';
 import 'package:home_bake/features/profile/model/gender_model.dart';
@@ -41,7 +39,7 @@ class ProfileViewmodel extends ChangeNotifier{
   TextEditingController get addressController => _addressController;
   TextEditingController get dobController => _dobController;
 
-  bool _isLoading = false;
+  final bool _isLoading = false;
   bool get isLoading => _isLoading;
 
   bool _isEnabled = false;
@@ -58,7 +56,7 @@ class ProfileViewmodel extends ChangeNotifier{
 
   bool _isFemale = false;
   bool get isFemale => _isFemale;
-  List<GenderModel> _genderList = [
+  final List<GenderModel> _genderList = [
     GenderModel(name: "Male", icon: AppAssets.male),
     GenderModel(name: "Female", icon: AppAssets.female),
   ];

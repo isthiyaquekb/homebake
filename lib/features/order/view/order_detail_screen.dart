@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:home_bake/core/app_colors.dart';
 import 'package:home_bake/widgets/common_app_bar.dart';
 
@@ -27,9 +26,9 @@ class OrderDetailScreen extends StatelessWidget {
                 border: Border.all(color: AppColor.black),
                 borderRadius: BorderRadius.circular(10)
               ),
-              child: Center(child: Text("ORDER QR CODE"),),
+              child: const Center(child: Text("ORDER QR CODE"),),
             ),//WIDGET FOR QR CODE
-            SizedBox(height: 10,),//
+            const SizedBox(height: 10,),//
             Expanded(child:  ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,

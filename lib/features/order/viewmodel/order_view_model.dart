@@ -1,9 +1,7 @@
-import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/services/firebase_services.dart';
@@ -13,13 +11,11 @@ import 'dart:developer';
 
 import 'package:home_bake/features/order/model/order_model.dart';
 import 'package:home_bake/features/order/model/order_status.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class OrderViewModel extends ChangeNotifier{
   final FirebaseServices _firebaseServices = FirebaseServices();
-  bool _isLoading = false;
-  List<OrderModel> _orderList=[];
+  final bool _isLoading = false;
+  final List<OrderModel> _orderList=[];
   User? _user;
   User? get user => _user;
   bool get isLoading => _isLoading;
@@ -73,7 +69,7 @@ class OrderViewModel extends ChangeNotifier{
     }
   }
   Future<String> createOrder(String userId,List<Map<String, dynamic>> cartItems, double totalAmount) async {
-    log("CART ITEM MAP: ${cartItems}");
+    log("CART ITEM MAP: $cartItems");
     int orderNo = await generateUniqueOrderNo();
     try {
       // Generate a unique order ID

@@ -273,7 +273,7 @@ class AuthViewmodel extends ChangeNotifier {
       successSnackBar(context, 'Password reset email sent to $email');
     } catch (e) {
       print("Error sending password reset email: $e");
-      throw e;
+      rethrow;
     }
   }
 }

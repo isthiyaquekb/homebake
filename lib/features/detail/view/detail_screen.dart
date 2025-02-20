@@ -1,20 +1,17 @@
-import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/app_colors.dart';
 import 'package:home_bake/features/cart/model/cart_model.dart';
 import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
 import 'package:home_bake/features/detail/view_model/detail_view_model.dart';
-import 'package:home_bake/features/home/model/product_model.dart';
-import 'package:home_bake/utils/convex_quadrilateral_painter.dart';
+import 'package:home_bake/utils/snackbars.dart';
 import 'package:home_bake/widgets/build_curved_button.dart';
 import 'package:home_bake/widgets/glass_morphic_container.dart';
 import 'package:provider/provider.dart';
-import 'package:slider_button/slider_button.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 
 class DetailScreen extends StatelessWidget {
   final dynamic product;
@@ -149,7 +146,34 @@ class DetailScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: AppColor.secondaryColor)
-                ),child: SliderButton(
+                ),child: SlideAction(
+                    key: cartProvider.slideKey,
+                    borderRadius: 10,
+                    outerColor: AppColor.secondaryColor,
+                    onSubmit: () async {
+                      ///Do something here OnSlide
+                      var cartItem=CartModel(productId: product.id, name: product.name, image: product.image, price: product.price, quantity: context.read<DetailViewModel>().count);
+                      await cartProvider.addToCart(cartProvider.user!.uid.toString(), cartItem);
+                      if(context.mounted)  successSnackBar(context,"Added to cart successfully");
+                      Navigator.pop(context);
+                      Future.delayed(
+                        Duration(seconds: 1),
+                            () => cartProvider.slideKey.currentState!.reset(),
+                      );
+                    },
+                    alignment: Alignment.centerRight,
+                    sliderButtonIcon: SvgPicture.asset(AppAssets.cart,color: AppColor.secondaryColor,height: 24,width: 24,fit: BoxFit.fill,),
+                    child: Text(
+                      'Add to cart',
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelLarge
+                            ?.copyWith(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,color: AppColor.white)
+                    ),
+                  ),
+                /*child: SliderButton(
                   action: () async{
                     ///Do something here OnSlide
                     var cartItem=CartModel(productId: product.id, name: product.name, image: product.image, price: product.price, quantity: context.read<DetailViewModel>().count);
@@ -181,7 +205,7 @@ class DetailScreen extends StatelessWidget {
                   highlightedColor: Colors.white,
                   baseColor: Colors.red,
 
-                ),),),
+                ),*/),),
             ],
           ),
         ),
