@@ -269,10 +269,14 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      const HeaderWidget(
+                    Consumer<HomeViewModel>(
+                          builder: (context, homeViewProvider, child) => HeaderWidget(
                         title: "Discover by category",
-                        trailTitle: "See All",
-                      ),
+                        trailTitle: homeViewProvider.isFilteringEnable?"Reset":"",
+                        onTap: () {
+                          homeViewProvider.isFilteringEnable?homeViewProvider.resetFilter():(){};
+                        },
+                      ),),
                       const SizedBox(
                         height: 20,
                       ),
@@ -296,12 +300,16 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      const HeaderWidget(
+                       Consumer<HomeViewModel>(
+                          builder: (context, homeViewProvider, child) => HeaderWidget(
                         title: "Products",
-                        trailTitle: "See All",
-                      ),
+                        trailTitle: homeViewProvider.isFilteringEnable?"Reset":"",
+                        onTap: () {
+                          homeViewProvider.isFilteringEnable?homeViewProvider.resetFilter():(){};
+                        },
+                      ),),
                       SizedBox(
-                        height: 250,
+                        height: MediaQuery.sizeOf(context).height*0.32,
                         child: Consumer<HomeViewModel>(
                           builder: (context, homeViewProvider, child) =>
                               ListView.builder(

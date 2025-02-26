@@ -24,6 +24,7 @@ class HomeViewModel extends ChangeNotifier{
   final List<String> _addressList = [];
   bool _isLoading = false;
   bool _isLocating = false;
+  bool _isFilteringEnable = false;
   String _area = "";
   String _city = "";
   String _state = "";
@@ -37,6 +38,7 @@ class HomeViewModel extends ChangeNotifier{
   bool get isLocationGranted => _isLocationGranted;
   bool get isLoading => _isLoading;
   bool get isLocating => _isLocating;
+  bool get isFilteringEnable => _isFilteringEnable;
   String get area => _area;
   String get city => _city;
   String get state => _state;
@@ -131,6 +133,7 @@ class HomeViewModel extends ChangeNotifier{
   /// Filter products by category name
   Future<void> filterProductByCategoryName(String categoryName)async{
     _isLoading = true;
+    _isFilteringEnable = true;
     notifyListeners();
 
     try {
@@ -209,6 +212,12 @@ class HomeViewModel extends ChangeNotifier{
 
     // Convert to a formatted address string
     return uniqueList.join(", ");
+  }
+
+  void resetFilter()async {
+  _isFilteringEnable=false;
+   await getProducts();
+  notifyListeners();
   }
 
 }

@@ -61,7 +61,8 @@ class ProfileViewmodel extends ChangeNotifier{
     GenderModel(name: "Female", icon: AppAssets.female),
   ];
   List<GenderModel> get genderList => _genderList;
-  late DateTime birthdate;
+  late DateTime _birthdate=DateTime.now();
+  late DateTime birthdate=_birthdate;
   DateTime? date;
   // DateFormat? format;
   int _selectedGenderIndex=0;
@@ -72,7 +73,8 @@ class ProfileViewmodel extends ChangeNotifier{
   }
   void onInit() async {
     _userId=await fetchUserId();
-    birthdate=DateTime.now();
+    _birthdate=DateTime.now();
+     log("BIRTHDATE:$birthdate");
     notifyListeners();
   }
   Future<String> fetchUserId() async {
@@ -102,10 +104,10 @@ class ProfileViewmodel extends ChangeNotifier{
     _phoneController.text=user.phone;
     _addressController.text=user.address;
     _createdDate=user.createdAt;
-   /* if(!isEnabled){
+    if(!isEnabled){
       birthdate = user.dob == "" ? date ?? DateTime(DateTime.now().year - 16,DateTime.now().month, DateTime.now().day) : DateTime.parse(user.dob);
       log("BIRTHDATE:$birthdate");
-    }*/
+    }
     if(user.address!=""){
       for (var element in genderList) {
         if(user.gender==element.name){
@@ -116,10 +118,18 @@ class ProfileViewmodel extends ChangeNotifier{
   }
 
   Future<DateTime?> dobPicker(BuildContext context) async {
+     DateTime firstDate = DateTime(DateTime.now().year - 100, DateTime.now().month, DateTime.now().day);
+  DateTime lastDate = _calculateLastAllowedDate(); // Ensure this function is correct
+
+  // Ensure birthdate is within valid range
+  DateTime initialDate = (birthdate.isBefore(firstDate) || birthdate.isAfter(lastDate))
+      ? lastDate
+      : birthdate;
+
     final date = await showDatePicker(
       context: context,
       firstDate: DateTime(DateTime.now().year - 100,DateTime.now().month, DateTime.now().day),
-      initialDate: birthdate,
+      initialDate: initialDate,
       keyboardType: TextInputType.datetime,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       lastDate: _calculateLastAllowedDate(),
