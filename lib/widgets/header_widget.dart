@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 class HeaderWidget extends StatelessWidget {
   final String title;
   final String trailTitle;
+  final VoidCallback onTap;
   const HeaderWidget({
     super.key,
     required this.title,
     required this.trailTitle,
+    required this.onTap,
   });
 
   @override
@@ -21,17 +23,20 @@ class HeaderWidget extends StatelessWidget {
           Text(title),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(trailTitle),
-                const Icon(
-                  Icons.arrow_forward,
-                  color: Colors.red,
-                  size: 16,
-                )
-              ],
+            child: InkWell(
+              onTap: onTap,
+              child: trailTitle!=""?Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(trailTitle),
+                  const Icon(
+                    Icons.close,
+                    color: Colors.red,
+                    size: 16,
+                  )
+                ],
+              ):SizedBox.shrink(),
             ),
           ),
         ],
