@@ -48,8 +48,10 @@ class ProfileScreen extends StatelessWidget {
               if (!snapshot.hasData) {
                 return const Center(child: Text("No Profile Data Found"));
               }
-              UserModel user = snapshot.data!;
-              provider.setProfileData(user);
+              if(!provider.isEnabled){
+                UserModel user = snapshot.data!;
+                provider.setProfileData(user);
+              }
               return Column(
                 children: [
                   Padding(
@@ -207,26 +209,26 @@ class ProfileScreen extends StatelessWidget {
                               ),
                             ),
 
-                            provider.isEnabled?Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: provider.genderList.map((genderElement) => InkWell(
-                                onTap: (){
-                                  provider.setGenderIndex(provider.genderList.indexOf(genderElement));
-                                },
-                                child: Container(
-                                    height: 40,
-                                    width: MediaQuery.sizeOf(context).width*0.4,
-                                    decoration: BoxDecoration(
-                                        color: provider.genderList.indexOf(genderElement)==provider.selectedGenderIndex?AppColor.primaryColor.withOpacity(0.5):Colors.grey.shade100,
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(color: AppColor.borderColor)
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(child: SvgPicture.asset(genderElement.icon,height: 24,width: 24,)),
-                                    )),
-                              ),).toList(),):const SizedBox.shrink()
+                           Consumer<ProfileViewmodel>(builder: (context, viewmodel, child) =>  viewmodel.isEnabled?Row(
+                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             crossAxisAlignment: CrossAxisAlignment.center,
+                             children: viewmodel.genderList.map((genderElement) => InkWell(
+                               onTap: (){
+                                 provider.setGenderIndex(viewmodel.genderList.indexOf(genderElement));
+                               },
+                               child: Container(
+                                   height: 40,
+                                   width: MediaQuery.sizeOf(context).width*0.4,
+                                   decoration: BoxDecoration(
+                                       color: viewmodel.genderList.indexOf(genderElement)==viewmodel.selectedGenderIndex?AppColor.primaryColor.withOpacity(0.5):Colors.grey.shade100,
+                                       borderRadius: BorderRadius.circular(12),
+                                       border: Border.all(color: AppColor.borderColor)
+                                   ),
+                                   child: Padding(
+                                     padding: const EdgeInsets.all(8.0),
+                                     child: Center(child: SvgPicture.asset(genderElement.icon,height: 24,width: 24,)),
+                                   )),
+                             ),).toList(),):const SizedBox.shrink(),)
                           ],
                         ),
                       ),

@@ -37,7 +37,7 @@ class PopularCakeItemWidget extends StatelessWidget {
                 Container(height: MediaQuery.of(context).size.height*0.08,decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(10),topLeft: Radius.circular(10)),
                 ),),
-                Container(height: MediaQuery.of(context).size.height*0.18,decoration: const BoxDecoration(
+                Container(height: MediaQuery.of(context).size.height*0.13,decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10),bottomRight: Radius.circular(10)),
                 ),child: Padding(
                   padding: const EdgeInsets.all(8.0),

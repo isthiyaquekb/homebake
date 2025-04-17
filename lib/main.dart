@@ -1,7 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:home_bake/core/app_routes.dart';
+import 'package:home_bake/core/services/firebase_services.dart';
+import 'package:home_bake/core/services/local_notification_services.dart';
 import 'package:home_bake/features/auth/view_model/auth_view_model.dart';
 import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
 import 'package:home_bake/features/dashboard/viewmodel/dashboard_viewmodel.dart';
@@ -14,10 +18,22 @@ import 'package:home_bake/features/splash/view_model/splash_provider.dart';
 import 'package:home_bake/firebase_options.dart';
 import 'package:provider/provider.dart';
 
+// Background message handler
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform); // Needed for background isolate
+  print('Handling background message: ${message.notification?.title}');
+  LocalNotificationServices.instance.showNotification(message);
+}
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseServices().initializeFirebase();
+  await dotenv.load(fileName: ".env");
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => SplashProvider()),
     ChangeNotifierProvider(create: (_) => AuthViewmodel()),

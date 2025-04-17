@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:free_map/free_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:home_bake/core/app_keys.dart';
 import 'package:home_bake/core/services/firebase_services.dart';
 import 'package:home_bake/features/home/model/category_model.dart';
 import 'package:home_bake/features/home/model/product_model.dart';
@@ -11,6 +13,7 @@ import 'package:home_bake/utils/app_permissions.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class HomeViewModel extends ChangeNotifier{
+  final  storageBox = GetStorage();
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey(); // Create a key
   final FirebaseServices _firebaseServices = FirebaseServices();
   TextEditingController _searchController = TextEditingController();
@@ -45,17 +48,23 @@ class HomeViewModel extends ChangeNotifier{
   void init() async {
    await getCategories();
    await getProducts();
-  _isLocating=true;
    if(!isLocationGranted){
      await AppPermissions.instance.requestPermission(Permission.location);
    }
    _isLocationGranted = await AppPermissions.instance.isPermissionGranted(Permission.location);
-   if(!await AppPermissions.instance.isPermissionGranted(Permission.location)){
-     await AppPermissions.instance.requestPermission(Permission.location);
-   }
-   final position=  await getCurrentLocation();
-   log("POSITION:${position.latitude},${position.longitude}");
-   getAddress(LatLng(position.latitude, position.longitude));
+   // if(!await AppPermissions.instance.isPermissionGranted(Permission.location)){
+   //   await AppPermissions.instance.requestPermission(Permission.location);
+   // }
+  if(_isLocationGranted && storageBox.read(AppKeys.keyLat)==null||storageBox.read(AppKeys.keyLon)==null){
+    _isLocating=true;
+    final position=  await getCurrentLocation();
+    log("POSITION:${position.latitude},${position.longitude}");
+    storageBox.write(AppKeys.keyLat, position.latitude);
+    storageBox.write(AppKeys.keyLon, position.longitude);
+    getAddress(LatLng(position.latitude, position.longitude));
+  }else{
+    getAddress(LatLng(storageBox.read(AppKeys.keyLat), storageBox.read(AppKeys.keyLon)));
+  }
    notifyListeners();
   }
 
@@ -64,19 +73,23 @@ class HomeViewModel extends ChangeNotifier{
       lat: pos.latitude,
       lng: pos.longitude,
     );
-    print(data?.address);
-    List<String> splitList=[];
-    splitList=data!.address.split(",");
-    log("SPLIT:$splitList");
-    // _addressList.add();
-    String address =  correctAddress(splitList);
-    _area=address.split(",")[0].toString();
-    _city=address.split(",")[1].toString();
-    _state=address.split(",")[2].toString();
-    print("FINAL ADDRESS:$address");
+    if(data!=null){
+      print(data?.address);
+      List<String> splitList=[];
+      splitList=data!.address.split(",");
 
-    _isLocating=false;
-    notifyListeners();
+      String address =  correctAddress(splitList);
+      _area=address.split(",")[0].toString();
+      _city=address.split(",")[1].toString();
+      _state=address.split(",")[2].toString();
+      print("FINAL ADDRESS:$address");
+
+      _isLocating=false;
+      notifyListeners();
+    }else{
+      _isLocating=false;
+      notifyListeners();
+    }
   }
 
   void setIsLoading(bool loading) {

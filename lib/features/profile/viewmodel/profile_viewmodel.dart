@@ -69,6 +69,7 @@ class ProfileViewmodel extends ChangeNotifier{
 
   void setGenderIndex(int index){
     _selectedGenderIndex=index;
+    notifyListeners();
   }
   void onInit() async {
     _userId=await fetchUserId();
@@ -169,6 +170,9 @@ class ProfileViewmodel extends ChangeNotifier{
   }
 
   Future<void> updateUserProfile(String userId, UserModel userData) async {
+
+    log("Current Firebase UID: ${FirebaseAuth.instance.currentUser!.uid}");
+    log("Used userId for update: $userId");
     try{
       await _firebaseServices.fireStore
           .collection('Users')
@@ -184,6 +188,8 @@ class ProfileViewmodel extends ChangeNotifier{
   void updateSession() {
     if(formKey.currentState!.validate()){
       var userData=UserModel(userId: userId,role: 'user', firstname: firstController.text, lastname: lastController.text, email: emailController.text, phone: phoneController.text, address: addressController.text, gender: genderList[selectedGenderIndex].name, dob: birthdate.toString(), createdAt: createdDate,modifiedAt: Timestamp.now(),);
+      log("PHONE TEXT:${phoneController.text}");
+      log("ADDRESS TEXT:${addressController.text}");
       updateUserProfile(userId, userData);
     }
   }

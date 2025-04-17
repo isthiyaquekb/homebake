@@ -1,9 +1,15 @@
+import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:googleapis_auth/auth_io.dart';
 import 'package:home_bake/core/app_assets.dart';
+import 'package:home_bake/core/app_keys.dart';
 import 'package:home_bake/core/services/firebase_services.dart';
 import 'package:home_bake/features/cart/model/cart_model.dart';
 import 'package:home_bake/features/cart/viewmodel/cart_view_model.dart';
@@ -11,9 +17,14 @@ import 'dart:developer';
 
 import 'package:home_bake/features/order/model/order_model.dart';
 import 'package:home_bake/features/order/model/order_status.dart';
+import 'package:http/http.dart' as https;
+import 'package:googleapis_auth/googleapis_auth.dart' as auth;
+
+import '../../../core/services/local_notification_services.dart';
 
 class OrderViewModel extends ChangeNotifier{
   final FirebaseServices _firebaseServices = FirebaseServices();
+  final  storageBox = GetStorage();
   final bool _isLoading = false;
   final List<OrderModel> _orderList=[];
   User? _user;
@@ -43,6 +54,7 @@ class OrderViewModel extends ChangeNotifier{
       print("Order placed successfully with ID: $orderId");
       await CartViewModel().clearUserCart(userId);
       getOrdersStream(userId);
+      sendPushNotification(storageBox.read(AppKeys.keyFcmToken),OrderStatus.newOrder.displayName);
       // Redirect user to order confirmation screen
     } else {
       print("Failed to place order");
@@ -85,6 +97,7 @@ class OrderViewModel extends ChangeNotifier{
         status: OrderStatus.newOrder,
         paymentMethod: "Cash on Delivery",
         qrCodeUrl: null, // Will generate QR code later
+          fcmToken:storageBox.read(AppKeys.keyFcmToken),
         createdAt: Timestamp.now(),
       );
 
@@ -165,4 +178,60 @@ class OrderViewModel extends ChangeNotifier{
         return AppAssets.newOrder; // Fallback color
     }
   }
+
+  Future<void> sendPushNotification(String fcmToken, String status) async {
+    try {
+      const String projectId = 'home-back-admin'; // Replace with your Firebase project ID
+
+      final Uri url = Uri.parse(
+          'https://fcm.googleapis.com/v1/projects/$projectId/messages:send');
+
+      final String accessToken = await getAccessToken(); // Get OAuth token
+
+      await https.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: jsonEncode({
+          "message": {
+            "token": fcmToken,
+            "notification": {
+              "title": "Order Status Updated",
+              "body": "Your order status is now $status",
+            },
+            "data": {
+              "click_action": "FLUTTER_NOTIFICATION_CLICK",
+              "status": "done",
+            }
+          }
+        }),
+      );
+
+      log("NOTIFICATION SENT to FCM token: $fcmToken");
+
+    } catch (e) {
+      log('Error sending push notification: $e');
+    }
+  }
+
+  Future<String> getAccessToken() async {
+    final credentials = auth.ServiceAccountCredentials.fromJson({
+      "type": "service_account",
+      "project_id": dotenv.env['FIREBASE_PROJECT_ID'],
+      "private_key_id": dotenv.env['FIREBASE_PRIVATE_KEY_ID'],
+      "private_key": dotenv.env['FIREBASE_PRIVATE_KEY']!.replaceAll(r'\n', '\n'),
+      "client_email": dotenv.env['FIREBASE_CLIENT_EMAIL'],
+      "client_id": dotenv.env['FIREBASE_CLIENT_ID'],
+      "auth_uri": dotenv.env['FIREBASE_AUTH_URI'],
+      "token_uri": dotenv.env['FIREBASE_TOKEN_URI'],
+      "auth_provider_x509_cert_url": dotenv.env['FIREBASE_AUTH_PROVIDER_CERT_URL'],
+      "client_x509_cert_url": dotenv.env['FIREBASE_CLIENT_CERT_URL'],
+    });
+
+    final client = await clientViaServiceAccount(credentials, ['https://www.googleapis.com/auth/firebase.messaging']);
+    return (client.credentials).accessToken.data;
+  }
+
 }
