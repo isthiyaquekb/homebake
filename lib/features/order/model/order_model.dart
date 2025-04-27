@@ -10,6 +10,7 @@ class OrderModel {
   OrderStatus status; // e.g., Pending, Completed, Canceled
   String paymentMethod;
   String? qrCodeUrl; // Store QR code if needed
+  String? qrData; // Store QR code if needed
   String? fcmToken;
   Timestamp createdAt;
 
@@ -22,6 +23,7 @@ class OrderModel {
     required this.status,
     required this.paymentMethod,
     this.qrCodeUrl,
+    this.qrData,
     this.fcmToken,
     required this.createdAt,
   });
@@ -36,6 +38,7 @@ class OrderModel {
       'status': status.name, // Save as string in Fire Store
       "paymentMethod": paymentMethod,
       "qrCodeUrl": qrCodeUrl,
+      "qrData": qrData,
       "fcmToken": fcmToken,
       "createdAt": createdAt,
     };
@@ -51,6 +54,7 @@ class OrderModel {
       status: OrderStatus.values.firstWhere((e) => e.name == map['status'], orElse: () => OrderStatus.newOrder),
       paymentMethod: map["paymentMethod"] ?? "Cash on Delivery",
       qrCodeUrl: map["qrCodeUrl"],
+      qrData: map["qrData"],
       fcmToken: map["fcmToken"]??"",
       createdAt: map["createdAt"] is Timestamp ? map["createdAt"] : Timestamp.now(),
     );

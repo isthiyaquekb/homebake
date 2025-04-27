@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,8 +22,9 @@ import 'package:home_bake/features/order/model/order_model.dart';
 import 'package:home_bake/features/order/model/order_status.dart';
 import 'package:http/http.dart' as https;
 import 'package:googleapis_auth/googleapis_auth.dart' as auth;
+import 'package:path_provider/path_provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
-import '../../../core/services/local_notification_services.dart';
 
 class OrderViewModel extends ChangeNotifier{
   final FirebaseServices _firebaseServices = FirebaseServices();
@@ -107,7 +111,7 @@ class OrderViewModel extends ChangeNotifier{
       log("Order created successfully: ${order.orderId}");
 
       // Generate QR code
-      await generateAndStoreQRData(order.orderNo.toString(),order.orderId);
+      await generateAndStoreQRData(order.orderNo.toString(),order.orderId,order.status);
 
 
       return order.orderId;
@@ -119,13 +123,14 @@ class OrderViewModel extends ChangeNotifier{
 
   /// Generate QR Code and Upload to Firebase Storage
 
-  Future<void> generateAndStoreQRData(String orderNo, String orderId) async {
-    String qrData = "$orderNo:${orderNo}_orderId:$orderId";
+  Future<void> generateAndStoreQRData(String orderNo, String orderId,dynamic d) async {
+    String qrData = "orderNo:${orderNo}_orderId:$orderId";
 
     await FirebaseFirestore.instance.collection('orders').doc(orderId).update({
       'qrData': qrData, // Store as text
     });
 
+    saveQRImage(qrData,orderNo);
     print("QR Data stored successfully!");
   }
 
@@ -234,4 +239,55 @@ class OrderViewModel extends ChangeNotifier{
     return (client.credentials).accessToken.data;
   }
 
+
+  Future saveQRImage(String data,String name) async {
+    try {
+      // 1. Validate QR code
+      final qrValidationResult = QrValidator.validate(
+        data: data,
+        version: QrVersions.auto,
+        errorCorrectionLevel: QrErrorCorrectLevel.M,
+      );
+
+      if (qrValidationResult.status != QrValidationStatus.valid) {
+        throw Exception('Invalid QR data');
+      }
+
+      final qrCode = qrValidationResult.qrCode!;
+
+      // 2. Generate QR painter
+      final painter = QrPainter.withQr(
+        qr: qrCode,
+        color: const Color(0xFF000000),
+        emptyColor: const Color(0xFFFFFFFF),
+        gapless: true,
+      );
+
+      // 3. Render it to image data (Uint8List)
+      final ui.Image image = await painter.toImage(300); // 300x300 pixels
+      final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final Uint8List pngBytes = byteData!.buffer.asUint8List();
+
+      // 4. Save to a file
+      final dir = await getApplicationDocumentsDirectory();
+      final filePath = '${dir.path}/$name.png';
+      final file = File(filePath);
+      await file.writeAsBytes(pngBytes);
+
+      print('QR Code saved successfully at $filePath');
+    } catch (e) {
+      print('Error saving QR Code: $e');
+    }
+  }
+
+  Future<File?> fetchImage(String orderNo)async{
+    final dir = await getApplicationDocumentsDirectory();
+    final file = File('${dir.path}/$orderNo.png');
+
+    if (!file.existsSync()) {
+      return null;
+    }
+
+    return file;
+  }
 }
