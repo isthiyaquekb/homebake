@@ -17,7 +17,6 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Add Your Code here.
       final profileViewmodel = Provider.of<ProfileViewmodel>(context, listen: false);
       profileViewmodel.onInit();
     });
@@ -48,9 +47,12 @@ class ProfileScreen extends StatelessWidget {
               if (!snapshot.hasData) {
                 return const Center(child: Text("No Profile Data Found"));
               }
-              if(!provider.isEnabled){
-                UserModel user = snapshot.data!;
-                provider.setProfileData(user);
+
+              if (!provider.isEnabled && !provider.isProfileInitialized) {
+                final user = snapshot.data!;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  provider.setProfileData(user);
+                });
               }
               return Column(
                 children: [

@@ -15,6 +15,9 @@ import 'package:permission_handler/permission_handler.dart';
 class HomeViewModel extends ChangeNotifier{
   final  storageBox = GetStorage();
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey(); // Create a key
+
+  bool _isInitialized = false;
+
   final FirebaseServices _firebaseServices = FirebaseServices();
   TextEditingController _searchController = TextEditingController();
   TextEditingController get searchController => _searchController;
@@ -32,7 +35,6 @@ class HomeViewModel extends ChangeNotifier{
   String _city = "";
   String _state = "";
   bool _isLocationGranted = false;
-  final bool _isLocationDenied = false;
   List<CategoryModel> get categoryList=> _categoryList;
   List<ProductModel> get productList=> _productList;
   List<ProductModel> get filteredProducts => _filteredProducts;
@@ -48,15 +50,16 @@ class HomeViewModel extends ChangeNotifier{
 
 
   void init() async {
+
+    if (_isInitialized) return;
+    _isInitialized = true;
+
    await getCategories();
    await getProducts();
    if(!isLocationGranted){
      await AppPermissions.instance.requestPermission(Permission.location);
    }
    _isLocationGranted = await AppPermissions.instance.isPermissionGranted(Permission.location);
-   // if(!await AppPermissions.instance.isPermissionGranted(Permission.location)){
-   //   await AppPermissions.instance.requestPermission(Permission.location);
-   // }
   if(_isLocationGranted && storageBox.read(AppKeys.keyLat)==null||storageBox.read(AppKeys.keyLon)==null){
     _isLocating=true;
     final position=  await getCurrentLocation();
@@ -82,15 +85,13 @@ class HomeViewModel extends ChangeNotifier{
       lng: pos.longitude,
     );
     if(data!=null){
-      print(data?.address);
       List<String> splitList=[];
-      splitList=data!.address.split(",");
+      splitList=data.address.split(",");
 
       String address =  correctAddress(splitList);
       _area=address.split(",")[0].toString();
       _city=address.split(",")[1].toString();
       _state=address.split(",")[2].toString();
-      print("FINAL ADDRESS:$address");
 
       _isLocating=false;
       notifyListeners();
@@ -215,8 +216,6 @@ class HomeViewModel extends ChangeNotifier{
     // Remove duplicates while preserving order
     List<String> uniqueList = addressList.toSet().toList();
 
-    print("Unique List Before Removal: $uniqueList");
-
     // Remove 2nd index (index 2) and second-last index (index length - 2) if possible
     if (uniqueSet.length < addressList.length) {
       // Duplicates exist, remove index 2 (third item)
@@ -226,8 +225,6 @@ class HomeViewModel extends ChangeNotifier{
       // No duplicates, remove index 1 (second item)
       uniqueList.removeAt(uniqueList.length - 2);
     }
-
-    print("Unique List After Removal: $uniqueList");
 
     // Convert to a formatted address string
     return uniqueList.join(", ");

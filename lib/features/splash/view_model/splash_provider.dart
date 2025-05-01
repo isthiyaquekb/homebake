@@ -23,7 +23,15 @@ class SplashProvider extends ChangeNotifier{
 
 
   void navigateToHome(BuildContext context) {
-  storageBox.read(AppKeys.keyIsLoggedIn)?Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard):Navigator.of(context).pushReplacementNamed(AppRoutes.onBoard);
+    if (!context.mounted) return;
+
+    final isLoggedIn = storageBox.read(AppKeys.keyIsLoggedIn) ?? false;
+
+    if (isLoggedIn) {
+      Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
+    } else {
+      Navigator.of(context).pushReplacementNamed(AppRoutes.onBoard);
+    }
   }
 
 

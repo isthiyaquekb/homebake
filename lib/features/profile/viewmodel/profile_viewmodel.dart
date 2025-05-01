@@ -68,14 +68,21 @@ class ProfileViewmodel extends ChangeNotifier{
   int _selectedGenderIndex=0;
   int get selectedGenderIndex => _selectedGenderIndex;
 
+  bool _isProfileInitialized = false;
+
+  bool get isProfileInitialized => _isProfileInitialized;
+
   void setGenderIndex(int index){
-    _selectedGenderIndex=index;
-    notifyListeners();
+    if (_selectedGenderIndex != index) {
+      _selectedGenderIndex = index;
+      notifyListeners();
+    }
   }
   void onInit() async {
     _userId=await fetchUserId();
     _birthdate=DateTime.now();
      log("BIRTHDATE:$birthdate");
+    _isProfileInitialized = false;
     notifyListeners();
   }
   Future<String> fetchUserId() async {
@@ -99,23 +106,30 @@ class ProfileViewmodel extends ChangeNotifier{
   }
 
   Future<void> setProfileData(UserModel user)async {
-    _emailController.text=user.email;
-    _firstNameController.text=user.firstname;
-    _lastNameController.text=user.lastname;
-    _phoneController.text=user.phone;
-    _addressController.text=user.address;
-    _createdDate=user.createdAt;
-    if(!isEnabled){
-      birthdate = user.dob == "" ? date ?? DateTime(DateTime.now().year - 16,DateTime.now().month, DateTime.now().day) : DateTime.parse(user.dob);
+    if (_isProfileInitialized) return;
+
+    _emailController.text = user.email;
+    _firstNameController.text = user.firstname;
+    _lastNameController.text = user.lastname;
+    _phoneController.text = user.phone;
+    _addressController.text = user.address;
+    _createdDate = user.createdAt;
+
+    if (!isEnabled) {
+      birthdate = user.dob == "" ? date ?? DateTime(DateTime.now().year - 16, DateTime.now().month, DateTime.now().day) : DateTime.parse(user.dob);
       log("BIRTHDATE:$birthdate");
     }
-    if(user.address!=""){
+
+    if (user.address != "") {
       for (var element in genderList) {
-        if(user.gender==element.name){
+        if (user.gender == element.name) {
           setGenderIndex(genderList.indexOf(element));
         }
       }
     }
+
+    _isProfileInitialized = true;
+    notifyListeners();
   }
 
   Future<DateTime?> dobPicker(BuildContext context) async {

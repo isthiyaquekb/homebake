@@ -11,7 +11,6 @@ import 'package:home_bake/features/home/view_model/home_view_model.dart';
 import 'package:home_bake/widgets/category_item_widget.dart';
 import 'package:home_bake/widgets/header_widget.dart';
 import 'package:home_bake/widgets/popular_cake_item_widget.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -27,26 +26,7 @@ class HomeScreen extends StatelessWidget {
     });
 
     return Scaffold(
-      key: context.read<HomeViewModel>().globalKey,
-      body: Consumer<HomeViewModel>(
-        builder: (context, value, child) => value.isLocating
-            ? Center(
-                child: SizedBox(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Lottie.asset(AppAssets.locationPinLottie,height:MediaQuery.sizeOf(context).height * 0.50,),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        child: Text("Locating...",style: Theme.of(context)
-                            .textTheme
-                            .labelLarge,),
-                      )
-                    ],
-                  ),
-                ),
-              )
-            : SingleChildScrollView(
+      body: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 46.0, bottom: 16.0),
                   child: Column(
@@ -332,7 +312,6 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-      ),
     );
   }
 }

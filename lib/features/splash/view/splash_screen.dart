@@ -8,6 +8,7 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final splashViewmodel=context.read<SplashProvider>();
     WidgetsBinding.instance
         .addPostFrameCallback((_) {
