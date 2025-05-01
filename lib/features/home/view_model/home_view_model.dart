@@ -60,12 +60,18 @@ class HomeViewModel extends ChangeNotifier{
   if(_isLocationGranted && storageBox.read(AppKeys.keyLat)==null||storageBox.read(AppKeys.keyLon)==null){
     _isLocating=true;
     final position=  await getCurrentLocation();
-    log("POSITION:${position.latitude},${position.longitude}");
     storageBox.write(AppKeys.keyLat, position.latitude);
     storageBox.write(AppKeys.keyLon, position.longitude);
     getAddress(LatLng(position.latitude, position.longitude));
   }else{
-    getAddress(LatLng(storageBox.read(AppKeys.keyLat), storageBox.read(AppKeys.keyLon)));
+    final position=  await getCurrentLocation();
+    if(position.latitude==storageBox.read(AppKeys.keyLat) && position.longitude==storageBox.read(AppKeys.keyLon)){
+      getAddress(LatLng(storageBox.read(AppKeys.keyLat), storageBox.read(AppKeys.keyLon)));
+    }else{
+      storageBox.write(AppKeys.keyLat, position.latitude);
+      storageBox.write(AppKeys.keyLon, position.longitude);
+      getAddress(LatLng(position.latitude, position.longitude));
+    }
   }
    notifyListeners();
   }
