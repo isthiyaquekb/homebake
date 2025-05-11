@@ -11,8 +11,8 @@ import 'package:home_bake/features/auth/view/login_screen.dart';
 import 'package:home_bake/features/onboarding/view/onboarding_screen.dart';
 import 'package:home_bake/features/order/view/order_detail_screen.dart';
 import 'package:home_bake/features/profile/view/profile_screen.dart';
-import 'package:home_bake/features/seeall/view/see_all_screen.dart';
 import 'package:home_bake/features/splash/view/splash_screen.dart';
+import 'package:home_bake/features/settings/view/settings_page.dart';
 
 abstract class AppRoutes {
   static const splash = '/';
@@ -69,7 +69,7 @@ abstract class AppRoutes {
           },
         );
       case seeAll:
-        return MaterialPageRoute(builder: (context) => const SeeAllScreen());
+        return MaterialPageRoute(builder: (context) => const SettingsPage());
 
       case cart:
         return MaterialPageRoute(builder: (context) => const CartScreen());

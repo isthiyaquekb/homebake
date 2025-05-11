@@ -58,19 +58,29 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'My Profile',
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
                     child: Container(
                       height: 120,
                       width: 120,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(60),
-                        color: provider.isEnabled?Colors.green.shade200:Colors.amber.shade200,
+                        color: provider.isEnabled?Colors.green.shade200:Colors.white,
                         border: Border.all(color: Colors.white54),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(2.0),
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(60),
-                            child: const Image(image: AssetImage(AppAssets.dummyProfile),)),
+                            child: const Image(image: AssetImage(AppAssets.appLogo),)),
                       ),
                     ),
                   ),
@@ -250,7 +260,7 @@ class ProfileScreen extends StatelessWidget {
                         child: Text("Update"),
                       ),
                     ),
-                  ):const SizedBox.shrink()
+                  ):const SizedBox.shrink(),
                 ],
               );
             },);

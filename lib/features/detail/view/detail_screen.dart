@@ -151,15 +151,19 @@ class DetailScreen extends StatelessWidget {
                     borderRadius: 10,
                     outerColor: AppColor.secondaryColor,
                     onSubmit: () async {
-                      ///Do something here OnSlide
                       var cartItem=CartModel(productId: product.id, name: product.name, image: product.image, price: product.price, quantity: context.read<DetailViewModel>().count);
                       await cartProvider.addToCart(cartProvider.user!.uid.toString(), cartItem);
                       if(context.mounted)  successSnackBar(context,"Added to cart successfully");
-                      Navigator.pop(context);
                       Future.delayed(
-                        Duration(seconds: 1),
-                            () => cartProvider.slideKey.currentState!.reset(),
+                        const Duration(seconds: 1),
+                            () {
+                          final currentState = cartProvider.slideKey.currentState;
+                          if (currentState != null) {
+                            currentState.reset();
+                          }
+                        },
                       );
+                      if(context.mounted) Navigator.pop(context);
                     },
                     alignment: Alignment.centerRight,
                     sliderButtonIcon: SvgPicture.asset(AppAssets.cart,color: AppColor.secondaryColor,height: 24,width: 24,fit: BoxFit.fill,),
@@ -173,39 +177,7 @@ class DetailScreen extends StatelessWidget {
                             fontWeight: FontWeight.w500,color: AppColor.white)
                     ),
                   ),
-                /*child: SliderButton(
-                  action: () async{
-                    ///Do something here OnSlide
-                    var cartItem=CartModel(productId: product.id, name: product.name, image: product.image, price: product.price, quantity: context.read<DetailViewModel>().count);
-                    await cartProvider.addToCart(cartProvider.user!.uid.toString(), cartItem);
-                    if(context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${product.name} added to cart')));
-                    Navigator.pop(context);
-                    return true;
-                  },
-
-                  ///Put label over here
-                  label: Text(
-                      "Add to cart",
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelLarge
-                          ?.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,color: AppColor.white)
-                  ),
-                  icon: Center(
-                      child:SvgPicture.asset(AppAssets.cart,color: AppColor.secondaryColor,)),
-
-                  ///Change All the color and size from here.
-                  width: 230,
-                  radius: 10,
-                  shimmer: false,
-                  buttonColor: AppColor.white,
-                  backgroundColor: AppColor.secondaryColor,
-                  highlightedColor: Colors.white,
-                  baseColor: Colors.red,
-
-                ),*/),),
+                ),),
             ],
           ),
         ),

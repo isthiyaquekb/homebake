@@ -189,7 +189,7 @@ class OrderViewModel extends ChangeNotifier{
       const String projectId = 'home-back-admin'; // Replace with your Firebase project ID
 
       final Uri url = Uri.parse(
-          'https://fcm.googleapis.com/v1/projects/$projectId/messages:send');
+          '${dotenv.get('BASE_FMC_URL')}/v1/projects/$projectId/messages:send');
 
       final String accessToken = await getAccessToken(); // Get OAuth token
 

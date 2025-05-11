@@ -33,7 +33,8 @@ class OrderSuccessPage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 48.0),
-              child: ElevatedButton(onPressed: () {
+              child: ElevatedButton(
+                  onPressed: () {
                 // Navigate back to Dashboard and set the Orders tab as active
                 Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.dashboard, (route) => false);
                 context.read<DashboardViewmodel>().setCurrentIndex(1);

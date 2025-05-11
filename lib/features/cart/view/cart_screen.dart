@@ -11,6 +11,7 @@ import 'package:home_bake/features/order/viewmodel/order_view_model.dart';
 import 'package:home_bake/widgets/common_app_bar.dart';
 import 'package:home_bake/widgets/empty_cart_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -237,16 +238,33 @@ class CartScreen extends StatelessWidget {
                             );
                           },
                         ))),
-            Consumer<CartViewModel>(builder: (context, provider, child) => provider.cartItemsList.isNotEmpty?ElevatedButton(
-              onPressed: () {
-                Provider.of<OrderViewModel>(context,listen: false).placeOrder(provider.user!.uid, provider.cartItemsList,);
-                // context.read<DashboardViewmodel>().setCurrentIndex(1);
-                Navigator.pushReplacementNamed(context, AppRoutes.success);
-              },
-              child: const Center(
-                child: Text("Proceed to checkout"),
+            Consumer<CartViewModel>(builder: (context, cartProvider, child) =>  cartProvider.cartItemsList.isNotEmpty?Container(height: 40,width: double.maxFinite,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AppColor.secondaryColor)
+              ),child: SlideAction(
+                key: cartProvider.slideKey,
+                borderRadius: 10,
+                outerColor: AppColor.secondaryColor,
+                onSubmit: () async {
+                  Provider.of<OrderViewModel>(context,listen: false).placeOrder(cartProvider.user!.uid, cartProvider.cartItemsList,);
+                  // context.read<DashboardViewmodel>().setCurrentIndex(1);
+                  Navigator.pushReplacementNamed(context, AppRoutes.success);
+
+                },
+                alignment: Alignment.centerRight,
+                sliderButtonIcon: SvgPicture.asset(AppAssets.cart,color: AppColor.secondaryColor,height: 24,width: 24,fit: BoxFit.fill,),
+                child: Text(
+                    'Proceed to checkout',
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelLarge
+                        ?.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,color: AppColor.white)
+                ),
               ),
-            ):const SizedBox.shrink(),)
+            ):const SizedBox.shrink(),),
           ],
         ),
       ),

@@ -34,10 +34,10 @@ class PopularCakeItemWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),child: Column(
               children: [
-                Container(height: MediaQuery.of(context).size.height*0.08,decoration: const BoxDecoration(
+                Container(height: MediaQuery.of(context).size.height*0.05,decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(10),topLeft: Radius.circular(10)),
                 ),),
-                Container(height: MediaQuery.of(context).size.height*0.13,decoration: const BoxDecoration(
+                Container(height: MediaQuery.of(context).size.height*0.17,decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10),bottomRight: Radius.circular(10)),
                 ),child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -70,20 +70,6 @@ class PopularCakeItemWidget extends StatelessWidget {
             ),),
           ),
           Positioned(top: 0,left: 0,right: 0,child: CachedNetworkImage(imageUrl: product.image.toString(),height: 80,width: 110,errorWidget: (context, url, error) => const Image(image: AssetImage(AppAssets.appLogo),fit: BoxFit.cover,),),),
-          // Consumer<CartViewModel>(builder: (context, cartProvider, child) =>  Positioned(bottom: 0,right: 0,child:ClipRRect(
-          //   borderRadius: const BorderRadius.only(bottomRight: Radius.circular(10),),
-          //   child: InkWell(
-          //     onTap: ()async{
-          //       var cartItem=CartModel(productId: product.id, name: product.name, image: product.image, price: product.price, quantity: 1);
-          //       await cartProvider.addToCart(cartProvider.user!.uid.toString(), cartItem);
-          //      if(context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${product.name} added to cart')));
-          //     },
-          //     child: Container(decoration: BoxDecoration(
-          //         color: Colors.red.shade300,
-          //         borderRadius: BorderRadius.only(topLeft: Radius.circular(5),)
-          //     ),child: Icon(Icons.add,size: 20,)),
-          //   ),
-          // ),),),
         ],
       ),
     );

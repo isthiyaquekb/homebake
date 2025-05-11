@@ -289,7 +289,7 @@ class HomeScreen extends StatelessWidget {
                         },
                       ),),
                       SizedBox(
-                        height: MediaQuery.sizeOf(context).height*0.32,
+                        height: MediaQuery.sizeOf(context).height*0.30,
                         child: Consumer<HomeViewModel>(
                           builder: (context, homeViewProvider, child) =>
                               ListView.builder(

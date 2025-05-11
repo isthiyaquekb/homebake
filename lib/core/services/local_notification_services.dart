@@ -30,6 +30,8 @@ class LocalNotificationServices {
     if (token != null && token != storedToken) {
       storageBox.write(AppKeys.keyFcmToken, token);
       print('New FCM Token stored: $token');
+      // Subscribe to topics
+      _messaging.subscribeToTopic('orders');
     }
   }
 

@@ -8,6 +8,7 @@ import 'package:home_bake/features/dashboard/viewmodel/dashboard_viewmodel.dart'
 import 'package:home_bake/features/home/view/home_screen.dart';
 import 'package:home_bake/features/order/view/order_screen.dart';
 import 'package:home_bake/features/profile/view/profile_screen.dart';
+import 'package:home_bake/features/settings/view/settings_page.dart';
 import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -100,6 +101,24 @@ class DashboardScreen extends StatelessWidget {
               color: AppColor.secondaryColor,
             ),
           ),
+          BottomNavigationBarItem(
+            backgroundColor: AppColor.scaffoldBackground,
+            icon: SvgPicture.asset(
+              AppAssets.settingIcon,
+              height: 24,
+              width: 24,
+              fit: BoxFit.scaleDown,
+              color: AppColor.darkIndicator,
+            ),
+            label: "Settings",
+            activeIcon: SvgPicture.asset(
+              AppAssets.settingIcon,
+              height: 24,
+              width: 24,
+              fit: BoxFit.scaleDown,
+              color: AppColor.secondaryColor,
+            ),
+          ),
         ],
         onTap: (value) {
           dashboardViewModel.setCurrentIndex(value);
@@ -112,7 +131,8 @@ class DashboardScreen extends StatelessWidget {
           HomeScreen(), //HOME
           OrderScreen(), //ORDERS
           CartScreen(), //CART
-          ProfileScreen(), //PAYMENTS
+          ProfileScreen(), //PROFILE
+          SettingsPage(), //SETTING
         ],
       ),
 
