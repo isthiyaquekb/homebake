@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_bake/core/app_assets.dart';
 import 'package:home_bake/core/app_colors.dart';
-import 'package:home_bake/features/auth/model/user_model.dart';
 import 'package:home_bake/features/profile/viewmodel/profile_viewmodel.dart';
 import 'package:home_bake/utils/date_formatter.dart';
 import 'package:home_bake/widgets/app_text_form_field.dart';

@@ -27,8 +27,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "app.kambathagothi.home_bake"
-    compileSdkVersion 35
-    ndkVersion "27.0.12077973"
+    compileSdkVersion 36
+    ndkVersion "28.2.13676358"
 
     compileOptions {
         coreLibraryDesugaringEnabled true
@@ -71,7 +71,6 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.multidex:multidex:2.0.1'
 
 }

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:home_bake/core/app_colors.dart';
-import 'package:provider/provider.dart';
 
 import '../../../widgets/common_app_bar.dart';
-import '../../profile/viewmodel/profile_viewmodel.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
